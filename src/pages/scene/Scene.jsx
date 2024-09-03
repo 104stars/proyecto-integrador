@@ -173,7 +173,7 @@ function Dashboard() {
           transformStyle: "preserve-3d",
         }}
       >
-        Water is running out
+        WATER IS RUNNING OUT
       </h1>
 
       <Canvas>
