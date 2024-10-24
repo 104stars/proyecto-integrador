@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { auth } from '../../../firebase.config';
-import { useNavigate } from 'react-router-dom';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { PointerLockControls } from '@react-three/drei';
-import * as THREE from 'three';
+import React, { useEffect, useState, useRef } from "react";
+import { auth } from "../../../firebase.config";
+import { useNavigate } from "react-router-dom";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { PointerLockControls } from "@react-three/drei";
+import * as THREE from "three";
 
 // Parameters for the cosine wave animation
 const frequency = 0.5; // Frequency of the wave
-const amplitude = 2;   // Amplitude of the wave
-const speed = 2;       // Speed of the wave
+const amplitude = 2; // Amplitude of the wave
+const speed = 2; // Speed of the wave
 
 // Main Scene component that sets up the 3D environment
 const Scene = () => {
@@ -16,7 +16,7 @@ const Scene = () => {
     <Canvas
       shadows // Enable shadows in the Canvas
       camera={{ position: [0, 10, 20], fov: 50 }} // Set up the camera with position and field of view
-      gl={{ clearColor: '#808080' }} // Set the background color of the Canvas
+      gl={{ clearColor: "#808080" }} // Set the background color of the Canvas
     >
       {/* Directional light with shadows enabled */}
       <directionalLight
@@ -32,14 +32,15 @@ const Scene = () => {
         shadow-camera-top={10}
         shadow-camera-bottom={-10}
       />
-      
+
       {/* Ambient light for general illumination */}
       <ambientLight intensity={0.3} />
 
       {/* Plane that receives shadows */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -3, 0]} receiveShadow>
         <planeGeometry args={[50, 50]} /> {/* Plane geometry */}
-        <shadowMaterial opacity={0.5} /> {/* Special material for receiving shadows */}
+        <shadowMaterial opacity={0.5} />{" "}
+        {/* Special material for receiving shadows */}
       </mesh>
 
       {/* The 3D object with cosine wave animation */}
@@ -73,7 +74,8 @@ const OscillatingCylinder = () => {
       castShadow // Enable shadow casting for the object
       receiveShadow // Enable the object to receive shadows
     >
-      <cylinderGeometry args={[1, 1, 2, 32]} /> {/* Cylinder geometry with specified dimensions */}
+      <cylinderGeometry args={[1, 1, 2, 32]} />{" "}
+      {/* Cylinder geometry with specified dimensions */}
       <meshStandardMaterial color="blue" /> {/* Standard material with color */}
     </mesh>
   );
@@ -90,7 +92,7 @@ function Dashboard() {
       if (currentUser) {
         setUser(currentUser); // Set the user if authenticated
       } else {
-        navigate('/'); // Redirect to home if not authenticated
+        navigate("/"); // Redirect to home if not authenticated
       }
     });
 
@@ -100,11 +102,14 @@ function Dashboard() {
 
   // Function to handle user sign-out
   const handleSignOut = () => {
-    auth.signOut().then(() => {
-      navigate('/'); // Redirect to home after sign-out
-    }).catch((error) => {
-      console.error("Error signing out:", error); // Log any sign-out errors
-    });
+    auth
+      .signOut()
+      .then(() => {
+        navigate("/"); // Redirect to home after sign-out
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error); // Log any sign-out errors
+      });
   };
 
   // If the user is not authenticated, return null
@@ -112,40 +117,69 @@ function Dashboard() {
 
   // Render the dashboard with a 3D scene and sign-out button
   return (
-    <div style={{ height: '110vh', width: '110vw', position: 'relative', backgroundColor: '#808080' }}>
-        <button onClick={handleSignOut}
-         >Sign Out</button>
-   
-      {/* Title in the center of the page */}
-      <h1 style={{
-        position: 'absolute',
-        top: '20%',
-        left: '40%',
-        transform: 'translate(-30%, -50%)',
-        color: '#333',
-        fontSize: '2rem',
-        zIndex: 10 // Ensures the title is above the 3D scene
-      }}>
-        Problemas Medioambientales 
-       
+    <div
+      style={{
+        height: "100vh", // Fit the container to the viewport height
+        width: "100vw", // Fit the container to the viewport width
+        position: "relative",
+        backgroundImage:
+          "linear-gradient(rgb(78, 183, 254), rgb(255, 255, 255))",
+        overflow: "hidden", // Prevent scrolling
+      }}
+    >
+      <button
+        onClick={handleSignOut}
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px", // Position button on the left
+          padding: "10px 20px",
+          backgroundColor: "#f0f0f0",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontWeight: "bold",
+          zIndex: 20, // Increased to ensure visibility above other elements
+          transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover effect
+        }}
+        onMouseOver={(e) => {
+          e.target.style.backgroundColor = "#004080"; // Dark blue on hover
+          e.target.style.color = "#fff"; // White text on hover
+        }}
+        onMouseOut={(e) => {
+          e.target.style.backgroundColor = "#f0f0f0"; // Light gray background
+          e.target.style.color = "#000"; // Black text
+        }}
+      >
+        Sign Out
+      </button>
+
+      {/* Single title in the center of the page with 3D effect */}
+      <h1
+        style={{
+          position: "absolute",
+          top: "20%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          color: "#fff", // White color for the text
+          fontSize: "3rem",
+          fontWeight: "bold",
+          zIndex: 10, // Ensures the title is above the 3D scene
+          textShadow: `
+            3px 3px 5px rgba(0, 0, 128, 0.5), 
+            6px 6px 10px rgba(0, 0, 64, 0.4), 
+            9px 9px 15px rgba(0, 0, 32, 0.3)`, // Deep 3D shadow effect
+          letterSpacing: "2px", // Adds spacing between letters for a bold look
+          transformStyle: "preserve-3d",
+        }}
+      >
+        WATER IS RUNNING OUT
       </h1>
-  
-      {/* Title in the center of the page */}
-      <h1 style={{
-        position: 'absolute',
-        top: '26%',
-        left: '40%',
-        transform: 'translate(40%, -50%)',
-        color: '#333',
-        fontSize: '2rem',
-        zIndex: 10 // Ensures the title is above the 3D scene
-      }}>
-      AGUA
-       
-      </h1>
+
       <Canvas>
         <ambientLight intensity={0.5} /> {/* Ambient light */}
-        <directionalLight position={[2, 0, 3]} intensity={1} /> {/* Directional light */}
+        <directionalLight position={[2, 0, 3]} intensity={1} />{" "}
+        {/* Directional light */}
         <OscillatingCylinder /> {/* 3D object with cosine wave animation */}
         <PointerLockControls /> {/* Controls for first-person view */}
       </Canvas>
@@ -154,6 +188,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-
-

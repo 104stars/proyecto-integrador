@@ -4,6 +4,7 @@ import { auth, provider } from "../../../firebase.config";
 import { useNavigate } from 'react-router-dom';
 import UserDAO from '../../dao/UserDAO';
 import './Login.css';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 /**
  * Login Component
@@ -55,11 +56,13 @@ function Login() {
       // Note: Consider adding user-friendly error handling here
     }
   };
-
+const onChange = ()=> {};
   return (
     <div className="login-container">
       <h1>Welcome</h1>
       <h2>Get started here</h2>
+      <ReCAPTCHA sitekey="6LcEcmoqAAAAACJ0r1qyGRdbtuFq5g0pzBmeKnYk" 
+      onChange={onChange}/>
       <button onClick={handleLogin} className='google-button'>
         <img src="/google.svg" alt="" className='google-logo' />
         Login with Google
