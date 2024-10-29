@@ -66,6 +66,7 @@ function Login() {
   const onChange = (value) => {
     setIsCaptchaVerified(!!value);
   };
+
   return (
     <div className="login-container">
       <h1>Welcome</h1>
