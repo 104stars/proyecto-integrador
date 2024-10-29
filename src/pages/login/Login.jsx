@@ -49,14 +49,34 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <h1>Welcome</h1>
-      <h2>Get started here</h2>
+    <div
+      className="login-container"
+      style={{
+        height: "100vh",
+        width: "100vw",
+        position: "relative",
+        backgroundImage: "url('/img/background.jpg!d')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        color: "#fff",
+      }}
+    >
+      <h1 className="login-title">
+        SAVE THE WATER EXPERIENCE
+        <span
+          style={{
+            width: "80px",
+            height: "8px",
+            backgroundColor: "#fff",
+            marginLeft: "20px",
+          }}
+        ></span>
+      </h1>
       <button onClick={handleLogin} className="google-button">
-        <img src="/google.svg" alt="" className="google-logo" />
-        Login with Google
+        <img src="/google.svg" alt="Google logo" className="google-logo" />
+        Sign in with Google
       </button>
-      <div style={{ marginTop: "20px" }}>
+      <div className="captcha-container">
         <ReCAPTCHA
           sitekey="6LdwKW8qAAAAAO6z-i-fx86kikV_s0GHKHHF0bfh"
           onChange={onChange}
