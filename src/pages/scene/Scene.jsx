@@ -1,130 +1,82 @@
-import React, { useEffect, useState, useRef } from "react";
-import { auth } from "../../../firebase.config";
+import React, { useRef, useEffect, useState, Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import {
+  OrbitControls,
+  PositionalAudio,
+  Center,
+  Text3D,
+  Environment,
+  Loader,
+} from "@react-three/drei";
+import UnderwaterScene from "../../blender/UnderwaterScene";
 import { useNavigate } from "react-router-dom";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { PointerLockControls } from "@react-three/drei";
-import * as THREE from "three";
+import { auth } from "../../../firebase.config";
 
-// Parameters for the cosine wave animation
-const frequency = 0.5; // Frequency of the wave
-const amplitude = 2; // Amplitude of the wave
-const speed = 2; // Speed of the wave
+const Scene = ({ playAudio }) => {
+  const audioRef = useRef();
+  const navigate = useNavigate();
+  const [isPlaying, setIsPlaying] = useState(playAudio);
 
-// Main Scene component that sets up the 3D environment
-const Scene = () => {
-  return (
-    <Canvas
-      shadows // Enable shadows in the Canvas
-      camera={{ position: [0, 10, 20], fov: 50 }} // Set up the camera with position and field of view
-      gl={{ clearColor: "#808080" }} // Set the background color of the Canvas
-    >
-      {/* Directional light with shadows enabled */}
-      <directionalLight
-        position={[5, 5, 5]} // Position of the light
-        intensity={1} // Light intensity
-        castShadow // Enable shadow casting
-        shadow-mapSize-width={1024} // Shadow map resolution
-        shadow-mapSize-height={1024}
-        shadow-camera-near={0.5} // Near plane of the shadow camera
-        shadow-camera-far={50} // Far plane of the shadow camera
-        shadow-camera-left={-10} // Shadow camera bounds
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
-      />
+  // Throttle para limitar la frecuencia de requestAnimationFrame
+  useEffect(() => {
+    let lastFrame = performance.now();
 
-      {/* Ambient light for general illumination */}
-      <ambientLight intensity={0.3} />
+    const animate = () => {
+      const now = performance.now();
+      if (now - lastFrame >= 16) {
+        // Aproximadamente 60 fps
+        lastFrame = now;
+        // Aquí puedes incluir lógica de animación si es necesario
+      }
+      requestAnimationFrame(animate);
+    };
 
-      {/* Plane that receives shadows */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -3, 0]} receiveShadow>
-        <planeGeometry args={[50, 50]} /> {/* Plane geometry */}
-        <shadowMaterial opacity={0.5} />{" "}
-        {/* Special material for receiving shadows */}
-      </mesh>
+    animate();
+  }, []);
 
-      {/* The 3D object with cosine wave animation */}
-      <OscillatingCylinder />
+  // useEffect para agregar el evento wheel como pasivo
+  useEffect(() => {
+    const handleWheel = (event) => {
+      // Lógica del evento si es necesario
+    };
 
-      {/* Orbit controls for navigating the scene */}
-      <OrbitControls />
-    </Canvas>
-  );
-};
+    window.addEventListener("wheel", handleWheel, { passive: true });
 
-// OscillatingCylinder component handles the cosine wave animation of the object
-const OscillatingCylinder = () => {
-  const meshRef = useRef();
-  const clock = new THREE.Clock(); // Create a clock for time-based animation
-
-  // Animation loop
-  useFrame(() => {
-    const time = clock.getElapsedTime(); // Get elapsed time from the clock
-    if (meshRef.current) {
-      const width = 10; // Define the width of the visible area
-      const x = (time * 5) % width; // Compute the x position and wrap it
-      const y = 2 * Math.cos(0.5 * x); // Compute y position using a cosine function
-      meshRef.current.position.set(x - width / 2, y, 0); // Set the position of the cylinder
-    }
-  });
-
-  return (
-    <mesh
-      ref={meshRef} // Reference to the mesh for animation
-      castShadow // Enable shadow casting for the object
-      receiveShadow // Enable the object to receive shadows
-    >
-      <cylinderGeometry args={[1, 1, 2, 32]} />{" "}
-      {/* Cylinder geometry with specified dimensions */}
-      <meshStandardMaterial color="blue" /> {/* Standard material with color */}
-    </mesh>
-  );
-};
-
-// Dashboard component which handles user authentication and renders the 3D scene
-function Dashboard() {
-  const navigate = useNavigate(); // Hook for navigation
-  const [user, setUser] = useState(null); // State to manage the current user
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
 
   useEffect(() => {
-    // Set up authentication state listener
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      if (currentUser) {
-        setUser(currentUser); // Set the user if authenticated
-      } else {
-        navigate("/"); // Redirect to home if not authenticated
-      }
-    });
+    if (audioRef.current) {
+      isPlaying ? audioRef.current.play() : audioRef.current.pause();
+    }
+  }, [isPlaying]);
 
-    // Cleanup the subscription on unmount
-    return () => unsubscribe();
-  }, [navigate]);
-
-  // Function to handle user sign-out
   const handleSignOut = () => {
     auth
       .signOut()
-      .then(() => {
-        navigate("/"); // Redirect to home after sign-out
-      })
-      .catch((error) => {
-        console.error("Error signing out:", error); // Log any sign-out errors
-      });
+      .then(() => navigate("/"))
+      .catch((error) => console.error("Error al cerrar sesión:", error));
   };
 
-  // If the user is not authenticated, return null
-  if (!user) return null;
+  const handleAudioToggle = () => {
+    setIsPlaying(!isPlaying);
+  };
 
-  // Render the dashboard with a 3D scene and sign-out button
+  const navigateTo = (path) => {
+    navigate(path);
+  };
+
   return (
     <div
       style={{
-        height: "100vh", // Fit the container to the viewport height
-        width: "100vw", // Fit the container to the viewport width
+        height: "100vh",
+        width: "100vw",
         position: "relative",
-        backgroundImage:
-          "linear-gradient(rgb(78, 183, 254), rgb(255, 255, 255))",
-        overflow: "hidden", // Prevent scrolling
+        backgroundImage: "url('/img/fondo.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
       <button
@@ -132,59 +84,155 @@ function Dashboard() {
         style={{
           position: "absolute",
           top: "20px",
-          left: "20px", // Position button on the left
+          right: "20px",
           padding: "10px 20px",
-          backgroundColor: "#f0f0f0",
+
           border: "none",
           borderRadius: "5px",
           cursor: "pointer",
           fontWeight: "bold",
-          zIndex: 20, // Increased to ensure visibility above other elements
-          transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover effect
+          zIndex: 20,
         }}
         onMouseOver={(e) => {
-          e.target.style.backgroundColor = "#004080"; // Dark blue on hover
-          e.target.style.color = "#fff"; // White text on hover
+          e.target.style.backgroundColor = "#004080";
+          e.target.style.color = "#fff";
         }}
         onMouseOut={(e) => {
-          e.target.style.backgroundColor = "#f0f0f0"; // Light gray background
-          e.target.style.color = "#000"; // Black text
+          e.target.style.backgroundColor = "#f0f0f0";
+          e.target.style.color = "#000";
         }}
       >
         Sign Out
       </button>
-
-      {/* Single title in the center of the page with 3D effect */}
-      <h1
+      <button
+        onClick={handleAudioToggle}
         style={{
           position: "absolute",
-          top: "20%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          color: "#fff", // White color for the text
-          fontSize: "3rem",
+          top: "20px",
+          left: "20px",
+          padding: "10px 20px",
+
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
           fontWeight: "bold",
-          zIndex: 10, // Ensures the title is above the 3D scene
-          textShadow: `
-            3px 3px 5px rgba(0, 0, 128, 0.5), 
-            6px 6px 10px rgba(0, 0, 64, 0.4), 
-            9px 9px 15px rgba(0, 0, 32, 0.3)`, // Deep 3D shadow effect
-          letterSpacing: "2px", // Adds spacing between letters for a bold look
-          transformStyle: "preserve-3d",
+          zIndex: 20,
+        }}
+        onMouseOver={(e) => {
+          e.target.style.backgroundColor = "#004080";
+          e.target.style.color = "#fff";
+        }}
+        onMouseOut={(e) => {
+          e.target.style.backgroundColor = "#f0f0f0";
+          e.target.style.color = "#000";
         }}
       >
-        WATER IS RUNNING OUT
-      </h1>
+        {isPlaying ? "Pause Audio" : "Play Audio"}
+      </button>
 
-      <Canvas>
-        <ambientLight intensity={0.5} /> {/* Ambient light */}
-        <directionalLight position={[2, 0, 3]} intensity={1} />{" "}
-        {/* Directional light */}
-        <OscillatingCylinder /> {/* 3D object with cosine wave animation */}
-        <PointerLockControls /> {/* Controls for first-person view */}
+      <Canvas
+        dpr={[1, 1.5]}
+        shadows
+        camera={{ position: [5, 80, 80], fov: 90 }}
+      >
+        <Suspense fallback={null}>
+          <ambientLight intensity={2} />
+          <directionalLight
+            position={[5, 10, 5]}
+            intensity={1.2}
+            castShadow
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+            shadow-camera-far={50}
+            shadow-camera-left={-10}
+            shadow-camera-right={10}
+            shadow-camera-top={10}
+            shadow-camera-bottom={-10}
+          />
+
+          <UnderwaterScene scale={[1, 1, 1]} castShadow receiveShadow />
+
+          <group position={[0, 5, 0]}>
+            <PositionalAudio
+              ref={audioRef}
+              url="/sound/soundwater.mp3"
+              loop
+              distance={10}
+              volume={70}
+            />
+          </group>
+
+          <Center position={[0, 25, 15]} rotation={[0, 0, 0]}>
+            <Text3D
+              font="./fonts/blue-ocean.json"
+              bevelEnabled
+              bevelSize={0.02}
+              bevelThickness={0.04}
+              height={0.3}
+              lineHeight={0.8}
+              letterSpacing={0.1}
+              size={4}
+              castShadow
+            >
+              {
+                "                            WELCOME             \n      \n         Explore how together we can care \n                    for and preserve         \n         water for a sustainable future."
+              }
+              <meshStandardMaterial color="#FFFFFF" />
+            </Text3D>
+          </Center>
+
+          <OrbitControls
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / -2}
+            minDistance={100}
+            maxDistance={100}
+          />
+        </Suspense>
       </Canvas>
+
+      <Loader />
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "20px",
+        }}
+      >
+        {["Information", "Problems", "Quiz"].map((title, index) => (
+          <div
+            key={index}
+            className="container"
+            style={{
+              width: "150px",
+              padding: "15px",
+              textAlign: "center",
+              backgroundColor: "#fff",
+              borderRadius: "5px",
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <h3>{title}</h3>
+            <p>
+              {title === "Information"
+                ? "Water is essential for life."
+                : title === "Problems"
+                ? "See what pollution, acidification and scarcity look like in the ocean."
+                : "Test your knowledge by answering some questions."}
+            </p>
+            <button onClick={() => navigateTo(`/${title.toLowerCase()}`)}>
+              Enter
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
 
-export default Dashboard;
+export default Scene;
