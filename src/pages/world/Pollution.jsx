@@ -1,6 +1,6 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Environment, Loader } from "@react-three/drei";
+import { OrbitControls, Loader } from "@react-three/drei";
 import ProblemPollution from "../../blender/ProblemPollution";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,6 @@ const Pollution = () => {
   const [loading, setLoading] = useState(true);
   const [ambientIntensity, setAmbientIntensity] = useState(2);
 
-  // Oscilación de intensidad de luz cada 3 segundos para reducir la carga
   useEffect(() => {
     const interval = setInterval(() => {
       setAmbientIntensity((prevIntensity) => (prevIntensity === 2 ? 3 : 2));
@@ -19,18 +18,14 @@ const Pollution = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Configuración inicial de la posición de la luz
   useEffect(() => {
     if (lightRef.current) {
       lightRef.current.position.set(5, 10, 5);
     }
   }, []);
 
-  // Evento wheel como pasivo
   useEffect(() => {
-    const handleWheel = (event) => {
-      // Lógica adicional si es necesario
-    };
+    const handleWheel = (event) => {};
 
     window.addEventListener("wheel", handleWheel, { passive: true });
 
