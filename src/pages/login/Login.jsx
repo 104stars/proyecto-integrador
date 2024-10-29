@@ -70,8 +70,6 @@ function Login() {
     <div className="login-container">
       <h1>Welcome</h1>
       <h2>Get started here</h2>
-      <ReCAPTCHA sitekey="6LcEcmoqAAAAACJ0r1qyGRdbtuFq5g0pzBmeKnYk" 
-      onChange={onChange}/>
       <button onClick={handleLogin} className='google-button'>
         <img src="/google.svg" alt="" className='google-logo' />
         Login with Google
