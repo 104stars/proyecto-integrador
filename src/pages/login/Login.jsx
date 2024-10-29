@@ -78,7 +78,7 @@ function Login() {
       </button>
       <div style={{ marginTop: "20px" }}>
         <ReCAPTCHA
-          sitekey="6LfuJW8qAAAAADPUyKVhafuj4e1KymtQlu1iqUM4"
+          sitekey="6LdwKW8qAAAAAO6z-i-fx86kikV_s0GHKHHF0bfh"
           onChange={onChange}
         />
       </div>
