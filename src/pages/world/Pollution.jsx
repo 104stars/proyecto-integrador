@@ -24,16 +24,6 @@ const Pollution = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const handleWheel = (event) => {};
-
-    window.addEventListener("wheel", handleWheel, { passive: true });
-
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, []);
-
   const handleLoad = () => {
     setLoading(false);
   };
@@ -43,123 +33,113 @@ const Pollution = () => {
       style={{
         height: "100vh",
         width: "100vw",
-        position: "relative",
+        display: "flex",
         backgroundImage: "url('/img/fondo.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {loading && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            height: "5px",
-            width: "100%",
-            backgroundColor: "#004080",
-            zIndex: 10,
-            transition: "width 0.5s ease-out",
-          }}
-        >
-          <div
-            style={{
-              height: "100%",
-              backgroundColor: "#fff",
-              width: loading ? "100%" : "0%",
-              transition: "width 0.5s ease-out",
-            }}
-          />
-        </div>
-      )}
-
-      <button
-        onClick={() => navigate("/problems")}
-        style={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontWeight: "bold",
-          zIndex: 20,
-        }}
-        onMouseOver={(e) => {
-          e.target.style.backgroundColor = "#004080";
-          e.target.style.color = "#fff";
-        }}
-        onMouseOut={(e) => {
-          e.target.style.backgroundColor = "#f0f0f0";
-          e.target.style.color = "#000";
-        }}
-      >
-        Back
-      </button>
-
+      {/* Texto de Información en el lado izquierdo */}
       <div
         style={{
-          position: "absolute",
-          top: "20%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          flex: "1",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
           padding: "20px",
-          borderRadius: "10px",
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
           color: "#fff",
-          width: "80%",
-          maxWidth: "600px",
           textAlign: "center",
-          zIndex: 15,
         }}
       >
         <h1
-          style={{ marginBottom: "10px", fontSize: "24px", fontWeight: "bold" }}
+          style={{
+            fontSize: "2em",
+            fontWeight: "bold",
+            marginBottom: "10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          Water Pollution
+          <span
+            style={{
+              display: "inline-block",
+              width: "50px",
+              height: "2px",
+              backgroundColor: "#fff",
+              marginRight: "10px",
+            }}
+          ></span>
+          Contamination
+          <span
+            style={{
+              display: "inline-block",
+              width: "50px",
+              height: "2px",
+              backgroundColor: "#fff",
+              marginLeft: "10px",
+            }}
+          ></span>
         </h1>
-        <p>
+        <p style={{ fontSize: "1em", lineHeight: "1.6", maxWidth: "500px" }}>
           Water pollution occurs when harmful substances, like plastics,
           chemicals, and waste, contaminate water bodies. It harms wildlife,
           damages ecosystems, and poses health risks to humans. Preventing water
           pollution is crucial for protecting the environment and ensuring clean
           water for all.
         </p>
+        <button
+          onClick={() => navigate("/problems")}
+          style={{
+            marginTop: "20px",
+            padding: "10px 20px",
+            backgroundColor: "#00cc99",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontSize: "1em",
+          }}
+        >
+          Back
+        </button>
       </div>
 
-      <Canvas
-        dpr={[1, 1.5]}
-        shadows
-        camera={{ position: [5, 20, 500], fov: 90 }}
-      >
-        <Suspense fallback={null} onLoaded={handleLoad}>
-          <ambientLight intensity={ambientIntensity} />
-          <directionalLight
-            ref={lightRef}
-            intensity={1}
-            castShadow
-            position={[5, 20, 80]}
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
-          />
-
-          <ProblemPollution
-            scale={[1, 1, 1]}
-            position={[0, -1, 0]}
-            castShadow
-          />
-
-          <OrbitControls
-            minPolarAngle={Math.PI / 3}
-            maxPolarAngle={Math.PI / -2}
-            minDistance={50}
-            maxDistance={200}
-          />
-        </Suspense>
-      </Canvas>
-
-      <Loader />
+      <div style={{ flex: "1", position: "relative" }}>
+        <Canvas
+          dpr={[1, 1.5]}
+          shadows
+          camera={{ position: [5, 20, 500], fov: 90 }}
+        >
+          <Suspense fallback={null} onLoaded={handleLoad}>
+            <ambientLight intensity={ambientIntensity} />
+            <directionalLight
+              ref={lightRef}
+              intensity={1}
+              castShadow
+              position={[5, 20, 80]}
+              shadow-mapSize-width={1024}
+              shadow-mapSize-height={1024}
+            />
+            <ProblemPollution
+              scale={[1, 1, 1]}
+              position={[0, -1, 0]}
+              castShadow
+            />
+            <OrbitControls
+              minPolarAngle={Math.PI / 3}
+              maxPolarAngle={Math.PI / -2}
+              minDistance={50}
+              maxDistance={200}
+              enableRotate={true}
+              enablePan={false}
+            />
+          </Suspense>
+        </Canvas>
+        <Loader />
+      </div>
     </div>
   );
 };

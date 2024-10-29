@@ -75,6 +75,8 @@ const Information = () => {
             maxAzimuthAngle={Math.PI / 10}
             minDistance={3}
             maxDistance={4}
+            enableRotate={true}
+            enablePan={false}
           />
         </Suspense>
       </Canvas>
