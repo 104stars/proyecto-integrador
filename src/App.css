@@ -1,48 +1,48 @@
 html,
 body {
-  height: 100%; /* Asegúrate de que el cuerpo ocupe el 100% de la altura */
-  margin: 0; /* Elimina márgenes */
-  overflow: hidden; /* Evita las barras de desplazamiento */
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
 canvas {
-  display: block; /* Asegúrate de que el canvas ocupe todo el espacio */
+  display: block;
 }
 
 .container {
   background-color: rgba(255, 255, 255, 0.8);
-  padding: 40px; /* Aumenta el padding */
+  padding: 40px;
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
-  max-width: 400px; /* Aumenta el ancho máximo */
-  margin: 0 auto; /* Centrar el contenedor */
-  font-size: 22px; /* Aumenta el tamaño de la fuente */
+  max-width: 400px;
+  margin: 0 auto;
+  font-size: 22px;
 }
 
 .container h3 {
-  font-size: 24px; /* Ajusta el tamaño de la fuente */
-  font-weight: bold; /* Negrita */
-  margin-bottom: 10px; /* Espacio inferior */
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .container p {
-  font-size: 16px; /* Tamaño de fuente más grande */
-  line-height: 1.5; /* Espaciado entre líneas */
-  margin-bottom: 20px; /* Espacio entre párrafo y botón */
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
 }
 
 .container button {
-  padding: 10px 20px; /* Espaciado interno del botón */
-  font-size: 18px; /* Tamaño de la fuente del botón */
-  background-color: #00bfff; /* Color de fondo del botón */
-  border: none; /* Sin borde */
-  border-radius: 5px; /* Bordes redondeados del botón */
-  color: white; /* Color del texto del botón */
-  cursor: pointer; /* Cambiar el cursor al pasar el mouse */
-  transition: background-color 0.3s; /* Transición suave */
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #00bfff;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .container button:hover {
-  background-color: #008cba; /* Color de fondo al pasar el mouse */
+  background-color: #008cba;
 }

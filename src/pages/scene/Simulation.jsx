@@ -1,6 +1,6 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Center, Text3D } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 import ProblemScene from "../../blender/ProblemScene";
 import { useNavigate } from "react-router-dom";
 
@@ -10,27 +10,22 @@ const Simulation = () => {
   const [loading, setLoading] = useState(true);
   const [ambientIntensity, setAmbientIntensity] = useState(2);
 
-  // Efecto de oscilación de intensidad de luz con un intervalo más largo (cada 3 segundos)
   useEffect(() => {
     const interval = setInterval(() => {
       setAmbientIntensity((prevIntensity) => (prevIntensity === 2 ? 3 : 2));
-    }, 3000); // Cambia cada 3 segundos en lugar de 1 segundo
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Posiciona la luz direccional solo una vez
   useEffect(() => {
     if (lightRef.current) {
       lightRef.current.position.set(5, 10, 5);
     }
   }, []);
 
-  // Configura el evento wheel como pasivo
   useEffect(() => {
-    const handleWheel = (event) => {
-      // Agrega lógica aquí si es necesario
-    };
+    const handleWheel = (event) => {};
     window.addEventListener("wheel", handleWheel, { passive: true });
 
     return () => {

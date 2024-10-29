@@ -5,7 +5,6 @@ import {
   PositionalAudio,
   Center,
   Text3D,
-  Environment,
   Loader,
 } from "@react-three/drei";
 import UnderwaterScene from "../../blender/UnderwaterScene";
@@ -17,16 +16,13 @@ const Scene = ({ playAudio }) => {
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(playAudio);
 
-  // Throttle para limitar la frecuencia de requestAnimationFrame
   useEffect(() => {
     let lastFrame = performance.now();
 
     const animate = () => {
       const now = performance.now();
       if (now - lastFrame >= 16) {
-        // Aproximadamente 60 fps
         lastFrame = now;
-        // Aquí puedes incluir lógica de animación si es necesario
       }
       requestAnimationFrame(animate);
     };
@@ -34,11 +30,8 @@ const Scene = ({ playAudio }) => {
     animate();
   }, []);
 
-  // useEffect para agregar el evento wheel como pasivo
   useEffect(() => {
-    const handleWheel = (event) => {
-      // Lógica del evento si es necesario
-    };
+    const handleWheel = (event) => {};
 
     window.addEventListener("wheel", handleWheel, { passive: true });
 

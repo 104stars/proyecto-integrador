@@ -13,10 +13,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Route for the root path, which renders the Login component */}
         <Route path="/" element={<Login />} />
 
-        {/* Route for the "/scene" path, which renders the Dashboard component */}
         <Route path="/scene" element={<Dashboard />} />
         <Route path="/problems" element={<Simulation />} />
         <Route path="/information" element={<Information />} />

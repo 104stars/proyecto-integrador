@@ -1,12 +1,6 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Environment,
-  Center,
-  Text3D,
-  Loader,
-} from "@react-three/drei";
+import { OrbitControls, Loader } from "@react-three/drei";
 import ProblemScarcity from "../../blender/ProblemScarcity";
 import { useNavigate } from "react-router-dom";
 
@@ -122,9 +116,10 @@ const Scarcity = () => {
           Water Scarcity
         </h1>
         <p>
-          Water scarcity is becoming one of the most pressing challenges of our
-          time. Explore the issues and solutions related to the conservation of
-          this vital resource.
+          Water scarcity occurs when water demand surpasses supply or quality is
+          inadequate for human, environmental, or agricultural needs. It stems
+          from climate change, overuse, pollution, and poor management,
+          impacting billions globally with risks to food security and health.
         </p>
       </div>
 
