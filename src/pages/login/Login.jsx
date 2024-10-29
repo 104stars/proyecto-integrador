@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { auth, provider } from "../../../firebase.config";
-import { useNavigate } from 'react-router-dom';
-import UserDAO from '../../dao/UserDAO';
-import './Login.css';
-import ReCAPTCHA from 'react-google-recaptcha';
+import { useNavigate } from "react-router-dom";
+import UserDAO from "../../dao/UserDAO";
+import "./Login.css";
+import ReCAPTCHA from "react-google-recaptcha";
 
 /**
  * Login Component
@@ -70,15 +70,14 @@ function Login() {
     <div className="login-container">
       <h1>Welcome</h1>
       <h2>Get started here</h2>
-      <ReCAPTCHA sitekey="6LcEcmoqAAAAACJ0r1qyGRdbtuFq5g0pzBmeKnYk" 
-      onChange={onChange}/>
-      <button onClick={handleLogin} className='google-button'>
-        <img src="/google.svg" alt="" className='google-logo' />
+
+      <button onClick={handleLogin} className="google-button">
+        <img src="/google.svg" alt="" className="google-logo" />
         Login with Google
       </button>
       <div style={{ marginTop: "20px" }}>
         <ReCAPTCHA
-          sitekey="6LcEcmoqAAAAACJ0r1qyGRdbtuFq5g0pzBmeKnYk"
+          sitekey="6LfuJW8qAAAAADPUyKVhafuj4e1KymtQlu1iqUM4"
           onChange={onChange}
         />
       </div>
