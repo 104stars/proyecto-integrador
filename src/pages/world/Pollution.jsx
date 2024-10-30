@@ -34,7 +34,7 @@ const Pollution = () => {
         height: "100vh",
         width: "100vw",
         display: "flex",
-        backgroundImage: "url('/img/fondo.jpg')",
+        backgroundImage: "url('/img/fondo.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

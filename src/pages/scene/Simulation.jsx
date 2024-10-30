@@ -49,7 +49,7 @@ const Simulation = () => {
         width: "100vw",
         display: "flex",
         position: "relative",
-        backgroundImage: "url('/img/fondo.jpg')",
+        backgroundImage: "url('/img/fondo.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

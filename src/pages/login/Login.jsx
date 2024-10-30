@@ -1,9 +1,9 @@
+import "./Login.css";
 import React, { useEffect, useState } from "react";
 import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { auth, provider } from "../../../firebase.config";
 import { useNavigate } from "react-router-dom";
 import UserDAO from "../../dao/UserDAO";
-import "./Login.css";
 import ReCAPTCHA from "react-google-recaptcha";
 
 function Login() {
@@ -49,41 +49,23 @@ function Login() {
   };
 
   return (
-    <div
-      className="login-container"
-      style={{
-        height: "100vh",
-        width: "100vw",
-        position: "relative",
-        backgroundImage: "url('/img/background.jpg!d')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        color: "#fff",
-      }}
-    >
-      <h1 className="login-title">
-        SAVE THE WATER EXPERIENCE
-        <span
-          style={{
-            width: "80px",
-            height: "8px",
-            backgroundColor: "#fff",
-            marginLeft: "20px",
-          }}
-        ></span>
-      </h1>
-      <button onClick={handleLogin} className="google-button">
-        <img src="/google.svg" alt="Google logo" className="google-logo" />
-        Sign in with Google
-      </button>
-      <div className="captcha-container">
-        <ReCAPTCHA
-          sitekey="6LdwKW8qAAAAAO6z-i-fx86kikV_s0GHKHHF0bfh"
-          onChange={onChange}
-        />
-      </div>
+    <div className="page-background">
+        <div className="login-container">
+            <h1>Bienvenido</h1>
+            <h2>Inicia sesión para continuar</h2>
+            <button onClick={handleLogin} className="google-button">
+                <img src="/google.svg" alt="" className="google-logo" />
+                Entrar con Google
+            </button>
+            <div className="captcha-container">
+                <ReCAPTCHA
+                    sitekey="6LdwKW8qAAAAAO6z-i-fx86kikV_s0GHKHHF0bfh"
+                    onChange={onChange}
+                />
+            </div>
+        </div>
     </div>
-  );
+);
 }
 
 export default Login;

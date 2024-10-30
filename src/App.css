@@ -71,30 +71,6 @@ canvas {
   margin-bottom: 20px;
 }
 
-.google-button {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #fff;
-  color: #000;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  font-weight: bold;
-  margin-top: 20px;
-  transition: transform 0.2s ease;
-}
-
-.google-button:hover {
-  transform: scale(1.05);
-}
-
-.google-logo {
-  width: 20px;
-  margin-right: 10px;
-}
-
 .captcha-container {
   margin-top: 20px;
 }
