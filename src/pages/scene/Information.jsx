@@ -22,7 +22,7 @@ const Information = () => {
         height: "100vh",
         width: "100vw",
         position: "relative",
-        backgroundImage: "url('/img/fondo.jpg')",
+        backgroundImage: "url('/img/fondo.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
