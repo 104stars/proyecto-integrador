@@ -1,9 +1,9 @@
+import "./Login.css";
 import React, { useEffect, useState } from "react";
 import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { auth, provider } from "../../../firebase.config";
 import { useNavigate } from "react-router-dom";
 import UserDAO from "../../dao/UserDAO";
-import "./Login.css";
 import ReCAPTCHA from "react-google-recaptcha";
 
 function Login() {
