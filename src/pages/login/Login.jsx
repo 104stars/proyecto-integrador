@@ -3,10 +3,8 @@ import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { auth, provider } from "../../../firebase.config";
 import { useNavigate } from "react-router-dom";
 import UserDAO from "../../dao/UserDAO";
+import "./Login.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import "./Login.css"; // Ensure your new CSS file is linked
-import "./Login.css?version=2";
-
 
 function Login() {
   const navigate = useNavigate();
@@ -51,13 +49,13 @@ function Login() {
   };
 
   return (
-    <div className="wrapper"> {/* Add this wrapper div */}
-        <div className="login-frame">
-          <h1>Welcome</h1>
-            <h2 className="login-title">Get started</h2>
+    <div className="page-background">
+        <div className="login-container">
+            <h1>Bienvenido</h1>
+            <h2>Inicia sesión para continuar</h2>
             <button onClick={handleLogin} className="google-button">
-                <img src="/google.svg" alt="Google logo" className="google-logo" />
-                Sign in with Google
+                <img src="/google.svg" alt="" className="google-logo" />
+                Entrar con Google
             </button>
             <div className="captcha-container">
                 <ReCAPTCHA
@@ -67,6 +65,7 @@ function Login() {
             </div>
         </div>
     </div>
-);}
+);
+}
 
 export default Login;

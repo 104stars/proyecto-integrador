@@ -1,92 +1,76 @@
-/* Frame container with rounded corners and red background */
-.wrapper {
+/* Add this new class for the page background */
+.page-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('img/fondo.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height */
-    background-color: #121212; /* Optional for visibility */
-    margin: 0; /* Reset margin to avoid any offset */
 }
 
-/* Frame container with rounded corners and red background */
-.login-frame {
-    width: 300px;
-    height: 350px;
-    padding: 30px;
+/* Modify the login-container */
+.login-container {
+    background-color: rgba(0, 0, 0, 0.151); /* Semi-transparent background */
+    padding: 40px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    border-radius: 15px;
-    background-color: rgba(66, 66, 66, 0.212);
-    border: 1px solid #00b8c5bb; /* Border color with proper opacity */
-    text-align: center;
-    color: white; /* Ensure text color is visible against background */
+    min-width: 300px;
+    height: auto;
+    backdrop-filter: blur(8px); /* Optional: adds a blur effect */
+    border: 1px solid rgba(255, 255, 255, 0.637);
+    gap: 20px;
 }
-
-/* Title styling */
-.login-title {
-	font-family: Montserrat, sans-serif;
-	/* Change font family here as needed */
-	font-weight: bold;
-	font-size: 24px;
-	margin-bottom: 20px;
-}
-
 h1 {
-	color: white;
-	font-family: 'Montserrat', sans-serif;
-	font-weight: 700;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
 }
-
 h2 {
     color: white;
     font-family: 'Montserrat', sans-serif;
-    font-size: 20px;
-    font-weight: 100;
+    font-weight: 400;
+    font-size: large;
+    margin-top: -15px;
 }
-
-body, html {
+body {
     -webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-    height: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #121212; /* Optional for visibility */
-  }
-/* Login button styling */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .google-button {
-	display: flex;
-	align-items: center;
-	padding: 5px 20px;
-	font-size: 16px;
-	margin-top: 20px;
-	cursor: pointer;
-	border-radius: 100px;
-	border: 1px solid #ffffff;
-	background-color: #00000044;
-	color: #ffffff;
-	font-family: 'Montserrat', sans-serif;
-	font-size: 20px;
-	font-weight: 500;
-	transition: border-color 0.1s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: 5px 20px;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 100px;
+    border: 1px solid #ffffff;
+    background-color: #00000044;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 .google-button:hover {
-	border-color: #f5f5f5;
-	box-shadow: 0px 0px 15px 5px rgba(218, 218, 218, 0.473);
+    border-color: #bee0e9;
+    box-shadow: 0px 0px 10px 1px rgba(207, 248, 255, 0.438);
+}
+.google-logo{
+    width: 50px;
+    margin-right: 10px;
 }
 
-.google-logo {
-	width: 50px;
-	margin-right: 10px;
-}
-
-/* ReCAPTCHA container styling */
 .captcha-container {
-	margin-top: 20px;
+    margin-top: 30px; /* Add space above the captcha */
 }
