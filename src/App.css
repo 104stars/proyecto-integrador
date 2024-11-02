@@ -47,39 +47,9 @@ canvas {
   background-color: #008cba;
 }
 
-.login-container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-image: url("/img/underwater-background.jpg"); /* Asegúrate de que la ruta de la imagen sea correcta */
-  background-size: cover;
-  background-position: center;
-  color: #fff;
-  text-align: center;
-}
-
-.login-title {
-  font-size: 2.5em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.login-subtitle {
-  font-size: 1.5em;
-  margin-bottom: 20px;
-}
 
 .captcha-container {
   margin-top: 20px;
-}
-
-.login-frame {
-  border: 2px solid #fff;
-  width: 250px;
-  height: 100px;
-  position: absolute;
 }
 
 .frame-top-left {
