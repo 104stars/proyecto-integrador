@@ -116,7 +116,7 @@ const Scarcity = () => {
         <Canvas
           dpr={[1, 1.5]}
           shadows
-          camera={{ position: [5, 20, 500], fov: 90 }}
+          camera={{ position: [5, 20, 500], fov: 60 }}
         >
           <Suspense fallback={null} onLoaded={handleLoad}>
             <ambientLight intensity={2} />
@@ -136,8 +136,8 @@ const Scarcity = () => {
             <OrbitControls
               minPolarAngle={Math.PI / 3}
               maxPolarAngle={Math.PI / -2}
-              minDistance={150}
-              maxDistance={200}
+              minDistance={100}
+              maxDistance={120}
             />
           </Suspense>
         </Canvas>
