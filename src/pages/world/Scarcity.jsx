@@ -24,8 +24,6 @@ const Scarcity = () => {
     window.cameraRef = cameraRef; // Makes cameraRef globally accessible
   }, []);
 
-  setInterval(() => console.log(window.cameraRef.current.position), 1000000); // Logs every second
-
   useEffect(() => {
     // Function to cycle through the camera positions
     const cycleCameraPosition = () => {
