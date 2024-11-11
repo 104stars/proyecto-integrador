@@ -1,37 +1,43 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Loader } from "@react-three/drei";
-import ProblemAcidification from "../../blender/ProblemAcidification";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Loader, Shadow } from "@react-three/drei";
+import { Model } from "../../blender/ProblemAcidification";
 import { useNavigate } from "react-router-dom";
+import Lights from "../lights/Lights";
+import WelcomeText from "./WelcomeText";
+import BubbleGroup from "../control/Bubbles";
+import { gsap } from "gsap";
 
 const Acidification = () => {
-  const lightRef = useRef();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let lastFrame = performance.now();
-    const animate = () => {
-      const now = performance.now();
-      if (now - lastFrame >= 16) {
-        lastFrame = now;
-      }
-      requestAnimationFrame(animate);
-    };
-    animate();
-  }, []);
-
-  useEffect(() => {
-    const handleWheel = (event) => {};
-    window.addEventListener("wheel", handleWheel, { passive: true });
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-    };
-  }, []);
+  const [isRotating, setIsRotating] = useState(false);
+  const controlsRef = useRef();
 
   const handleLoad = () => {
     setLoading(false);
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter" && controlsRef.current) {
+        setIsRotating((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.autoRotate = isRotating;
+      controlsRef.current.autoRotateSpeed = 5;
+    }
+  }, [isRotating]);
 
   return (
     <div
@@ -44,7 +50,6 @@ const Acidification = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* Texto de Información en el lado izquierdo */}
       <div
         style={{
           flex: "1",
@@ -77,7 +82,7 @@ const Acidification = () => {
               marginRight: "10px",
             }}
           ></span>
-          Water Acidification
+          ACIDIFICACIÓN
           <span
             style={{
               display: "inline-block",
@@ -88,13 +93,16 @@ const Acidification = () => {
             }}
           ></span>
         </h1>
-        <p style={{ fontSize: "1em", lineHeight: "1.6", maxWidth: "500px" }}>
-          Ocean acidification occurs when carbon dioxide (CO2) dissolves in the
-          water, lowering its pH. This affects marine ecosystems, weakening
-          corals, mollusks and other species that depend on a balanced
-          environment. It is one of the consequences of the increase of CO2 in
-          the atmosphere, caused mainly by human activities such as the burning
-          of fossil fuels.
+        <p style={{ fontSize: "1.5em", lineHeight: "1.6", maxWidth: "500px" }}>
+          La acidificación de los océanos es una amenaza silenciosa que pone en
+          riesgo no solo a los ecosistemas marinos, sino también a nuestra
+          propia supervivencia. Los océanos son vitales para la vida en la
+          Tierra; generan gran parte del oxígeno que respiramos y regulan el
+          clima. Protegerlos es proteger nuestro futuro. Cambios simples en
+          nuestro día a día, como reducir el consumo de combustibles fósiles y
+          apoyar prácticas sostenibles, pueden marcar la diferencia. Actuemos
+          juntos para frenar esta amenaza y preservar la riqueza y diversidad de
+          nuestros océanos para las generaciones futuras.
         </p>
         <button
           onClick={() => navigate("/problems")}
@@ -113,33 +121,30 @@ const Acidification = () => {
         </button>
       </div>
 
-      {/* Canvas para el escenario 3D en el lado derecho */}
       <div style={{ flex: "1", position: "relative" }}>
         <Canvas
           dpr={[1, 1.5]}
           shadows
-          camera={{ position: [5, 20, 500], fov: 90 }}
+          camera={{ position: [5, -3, 15], fov: 50, near: 0.1, far: 1000 }}
         >
           <Suspense fallback={null} onLoaded={handleLoad}>
-            <ambientLight intensity={2} />
-            <directionalLight
-              ref={lightRef}
-              intensity={1}
-              castShadow
-              position={[5, 20, 80]}
-              shadow-mapSize-width={1024}
-              shadow-mapSize-height={1024}
-            />
-            <ProblemAcidification
-              scale={[1, 1, 1]}
-              position={[0, -1, 0]}
-              castShadow
-            />
+            <Lights />
+
+            <WelcomeText />
+
+            <group
+              position={[0, -30, 0]}
+              rotation={[Math.PI / 6, Math.PI / 4, 0]}
+            >
+              <Model castShadow receiveShadow />
+              <Shadow color="white" colorStop={0} opacity={0.5} fog={false} />
+            </group>
+            <BubbleGroup count={100} bubbleSize={1} />
+
             <OrbitControls
-              minPolarAngle={Math.PI / 3}
-              maxPolarAngle={Math.PI / -2}
-              minDistance={50}
-              maxDistance={200}
+              ref={controlsRef}
+              minDistance={200}
+              maxDistance={300}
               enableRotate={true}
               enablePan={false}
             />

@@ -1,6 +1,11 @@
-import React, { useRef, useEffect, useState, Suspense } from "react";
+/* import React, { useRef, useEffect, useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, PositionalAudio, Loader } from "@react-three/drei";
+import {
+  OrbitControls,
+  PositionalAudio,
+  Loader,
+  Environment,
+} from "@react-three/drei";
 import UnderwaterScene from "../../blender/UnderwaterScene";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
@@ -61,10 +66,6 @@ const Scene = ({ playAudio }) => {
         height: "100vh",
         width: "100vw",
         position: "relative",
-        backgroundImage: "url('/img/fondo.webp')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        color: "#fff",
       }}
     >
       <button
@@ -83,7 +84,7 @@ const Scene = ({ playAudio }) => {
           zIndex: 20,
         }}
       >
-        Sign-off
+        Salir
       </button>
       <FontAwesomeIcon
         icon={isPlaying ? faVolumeUp : faVolumeMute}
@@ -129,13 +130,12 @@ const Scene = ({ playAudio }) => {
           />
 
           <OrbitControls
-            minPolarAngle={Math.PI / 3}
-            maxPolarAngle={Math.PI / -2}
-            minDistance={100}
-            maxDistance={100}
-            enableRotate={true}
-            enablePan={false}
+            minPolarAngle={0}
+            maxPolarAngle={Math.PI}
+            minDistance={5}
+            maxDistance={1200}
           />
+          <Environment files="/img/pizzo-skye.hdr" background />
           <UnderwaterScene />
         </Suspense>
       </Canvas>
@@ -242,6 +242,248 @@ const Scene = ({ playAudio }) => {
           </div>
         ))}
       </div>
+
+      <Loader />
+    </div>
+  );
+};
+
+export default Scene;
+ */
+
+import React, { useRef, useEffect, useState, Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import {
+  OrbitControls,
+  PositionalAudio,
+  Loader,
+  Environment,
+} from "@react-three/drei";
+import UnderwaterScene from "../../blender/UnderwaterScene";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../../firebase.config";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeUp, faVolumeMute } from "@fortawesome/free-solid-svg-icons";
+import gsap from "gsap";
+import logo from "/img/logo.jpg";
+
+const Scene = ({ playAudio }) => {
+  const audioRef = useRef();
+  const cameraRef = useRef();
+  const navigate = useNavigate();
+  const [isPlaying, setIsPlaying] = useState(playAudio);
+  const [showIntro, setShowIntro] = useState(true);
+  const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
+
+  const cameraPositions = [
+    { x: -84, y: 50, z: -19 },
+    { x: -46, y: 60, z: 93 },
+    { x: -64, y: 50, z: 58 },
+    { x: -21.372, y: 20.438, z: -14.206 },
+  ];
+
+  useEffect(() => {
+    if (audioRef.current) {
+      isPlaying ? audioRef.current.play() : audioRef.current.pause();
+    }
+  }, [isPlaying]);
+
+  const handleAudioToggle = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const startIntro = () => {
+    setShowIntro(false);
+  };
+
+  const handleLogout = () => {
+    auth.signOut().then(() => navigate("/"));
+  };
+
+  return (
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        backgroundColor: "#000",
+        color: "#fff",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Navbar horizontal */}
+      <nav
+        style={{
+          position: "absolute",
+          top: 0,
+          width: "100%",
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "5px 0px ",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          zIndex: 1000,
+        }}
+      >
+        {/* Logo */}
+        <div>
+          <img src={logo} alt="Logo" style={{ height: "40px" }} />
+        </div>
+
+        {/* Navigation Links */}
+        <div style={{ display: "flex", gap: "15px" }}>
+          {" "}
+          <button
+            onClick={() => navigate("/information")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#fff",
+              cursor: "pointer",
+              fontSize: "1em",
+            }}
+          >
+            INFORMATE
+          </button>
+          <button
+            onClick={() => navigate("/quiz")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#fff",
+              cursor: "pointer",
+              fontSize: "1em",
+            }}
+          >
+            QUIZ
+          </button>
+          <button
+            onClick={handleLogout}
+            style={{
+              backgroundColor: "#29c667",
+              color: "#000",
+              padding: "10px 15px",
+              borderRadius: "5px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              border: "none",
+              fontSize: "1em",
+            }}
+          >
+            SALIR
+          </button>
+        </div>
+      </nav>
+
+      {/* Volume Icon */}
+      <FontAwesomeIcon
+        icon={isPlaying ? faVolumeUp : faVolumeMute}
+        onClick={handleAudioToggle}
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          cursor: "pointer",
+          fontSize: "24px",
+          color: "#fff",
+          zIndex: 20,
+        }}
+      />
+
+      {/* Texto de bienvenida en el lado izquierdo */}
+      {showIntro && (
+        <div
+          style={{
+            position: "absolute",
+            top: "30%",
+            left: "50px",
+            maxWidth: "500px",
+            zIndex: 20,
+            color: "#fff",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "4em",
+              fontWeight: "bold",
+              color: "#ffffff",
+              marginBottom: "20px",
+              lineHeight: "1.2",
+            }}
+          >
+            BIENVENIDO
+          </h1>
+          <p
+            style={{
+              fontSize: "1.2em",
+              color: "#cccccc",
+              lineHeight: "1.6",
+              marginBottom: "30px",
+            }}
+          >
+            Explora cómo podemos cuidar y preservar juntos el agua para un
+            futuro sostenible.
+          </p>
+          <button
+            onClick={startIntro}
+            style={{
+              backgroundColor: "#29c667",
+              color: "#000",
+              padding: "12px 24px",
+              borderRadius: "5px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              border: "none",
+              fontSize: "1em",
+            }}
+          >
+            Comenzar
+          </button>
+        </div>
+      )}
+
+      {/* Canvas Section */}
+      <Canvas
+        dpr={[1, 1.5]}
+        shadows
+        camera={{ position: [40, -100, 500], fov: 90 }}
+        onCreated={({ camera }) => (cameraRef.current = camera)}
+        style={{ height: "100vh", width: "100%" }}
+      >
+        <group position={[0, 5, 0]}>
+          <PositionalAudio
+            ref={audioRef}
+            url="/sound/soundwater.mp3"
+            loop
+            distance={10}
+            volume={70}
+          />
+        </group>
+        <Suspense fallback={null}>
+          <ambientLight intensity={2} />
+          <directionalLight
+            position={[5, 10, 5]}
+            intensity={1.2}
+            castShadow
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+            shadow-camera-far={50}
+            shadow-camera-left={-10}
+            shadow-camera-right={10}
+            shadow-camera-top={10}
+            shadow-camera-bottom={-10}
+          />
+
+          <OrbitControls
+            minPolarAngle={0}
+            maxPolarAngle={Math.PI}
+            enablePan={true}
+          />
+          <Environment files="/img/pizzo-skye.hdr" background />
+          <UnderwaterScene />
+        </Suspense>
+      </Canvas>
 
       <Loader />
     </div>
