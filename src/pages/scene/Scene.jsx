@@ -96,7 +96,7 @@ const Scene = ({ playAudio }) => {
         dpr={[1, 1.5]}
         shadows
         camera={{
-          position: [11.375716828347702, 2.2, 10.15589038197989],
+          position: [11.521756539858348, 6.746721462822984, 7.252281201943268],
           fov: 45,
         }}
         onCreated={({ camera }) => (cameraRef.current = camera)}
