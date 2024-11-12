@@ -1,7 +1,4 @@
-import React, { Suspense, useRef, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import ProblemScene from "../../blender/ProblemScene";
+import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Bubble = ({ left, size, duration }) => (
@@ -52,33 +49,10 @@ const Simulation = () => {
         backgroundImage: "url('/img/fondo.webp')",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        justifyContent: "center", // Centra horizontalmente
+        alignItems: "center", // Centra verticalmente
       }}
     >
-      <div style={{ flex: 1, position: "relative" }}>
-        <Canvas shadows camera={{ position: [5, 20, 500], fov: 90 }}>
-          <Suspense fallback={null} onLoaded={handleLoad}>
-            <ambientLight intensity={ambientIntensity} />
-            <directionalLight
-              ref={lightRef}
-              intensity={1}
-              castShadow
-              position={[5, 20, 80]}
-              shadow-mapSize-width={1024}
-              shadow-mapSize-height={1024}
-            />
-            <ProblemScene scale={[1, 1, 1]} position={[0, -1, 0]} castShadow />
-            <OrbitControls
-              minPolarAngle={Math.PI / 3}
-              maxPolarAngle={Math.PI / -2}
-              minDistance={20}
-              maxDistance={30}
-              enableRotate={true}
-              enablePan={false}
-            />
-          </Suspense>
-        </Canvas>
-      </div>
-
       <div
         style={{
           flex: "0.3",
@@ -90,6 +64,7 @@ const Simulation = () => {
           backgroundColor: "rgba(0, 0, 0, 0.5)",
           color: "#fff",
           borderLeft: "2px solid rgba(255, 255, 255, 0.3)",
+          height: "70%",
         }}
       >
         <h2
@@ -106,7 +81,7 @@ const Simulation = () => {
             display: "flex",
             flexDirection: "column",
             gap: "15px",
-            width: "100%",
+            width: "80%",
             textAlign: "center",
           }}
         >
@@ -140,6 +115,21 @@ const Simulation = () => {
             </button>
           ))}
         </div>
+        <button
+          onClick={() => navigate("/scene")}
+          style={{
+            marginTop: "20px",
+            padding: "10px 20px",
+            backgroundColor: "#00cc99",
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontSize: "1em",
+          }}
+        >
+          Back
+        </button>
       </div>
 
       {[...Array(30)].map((_, index) => (
