@@ -1,7 +1,13 @@
 import "./scene.css";
 import React, { useRef, useEffect, useState, Suspense } from "react";
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
-import { PositionalAudio, Loader, Environment, OrbitControls, TrackballControls } from "@react-three/drei";
+import {
+  PositionalAudio,
+  Loader,
+  Environment,
+  OrbitControls,
+  TrackballControls,
+} from "@react-three/drei";
 import UnderwaterScene from "../../blender/UnderwaterScene";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
@@ -11,10 +17,13 @@ import gsap from "gsap";
 import logo from "/img/logo.jpg";
 
 const Scene = ({ playAudio }) => {
+  const introContainerRef = useRef();
+  const problemsContainerRef = useRef();
   const audioRef = useRef();
   const cameraRef = useRef();
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(playAudio);
+  const [showProblems, setShowProblems] = useState(false);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -34,23 +43,34 @@ const Scene = ({ playAudio }) => {
     if (cameraRef.current) {
       const { x, y, z } = cameraRef.current.position;
       const { x: rotX, y: rotY, z: rotZ } = cameraRef.current.rotation;
-      
+
       console.log("Camera Position:", x, y, z);
       console.log("Camera Rotation (rad):", rotX, rotY, rotZ);
     }
   };
+
   const handleStart = () => {
+    animateCameraToStartPosition();
+    gsap.to(introContainerRef.current, {
+      opacity: 0,
+      duration: 0.5,
+      onComplete: () => {
+        setShowProblems(true);
+      },
+    });
+  };
+
+  const animateCameraToStartPosition = () => {
     if (cameraRef.current) {
-      const targetPosition = {  x: 3.5056, y: -0.2875, z: 4.0448 };
+      const targetPosition = { x: 3.5056, y: -0.2875, z: 4.0448 };
       const targetRotation = { x: -1.578, y: 1.3087, z: 1.5785 };
 
-      // Animate camera position and rotation with GSAP
       gsap.to(cameraRef.current.position, {
         x: targetPosition.x,
         y: targetPosition.y,
         z: targetPosition.z,
         duration: 3,
-        ease: "power2.inOut"
+        ease: "power2.inOut",
       });
 
       gsap.to(cameraRef.current.rotation, {
@@ -58,15 +78,46 @@ const Scene = ({ playAudio }) => {
         y: targetRotation.y,
         z: targetRotation.z,
         duration: 3,
-        ease: "power2.inOut"
+        ease: "power2.inOut",
+        onComplete: () => {
+          // Fade in problems container with opacity set to 0 initially
+          gsap.fromTo(
+            problemsContainerRef.current,
+            { opacity: 0 },
+            { opacity: 1, duration: 1 }
+          );
+        },
       });
     }
   };
-  
+
+  const handleScarcity = () => {
+    if (cameraRef.current) {
+      const targetPosition = { x: 0.215, y: 1.071, z: 2.705 };
+      const targetRotation = { x: -0.206, y: -0.475, z: -0.095 };
+
+      gsap.to(cameraRef.current.position, {
+        x: targetPosition.x,
+        y: targetPosition.y,
+        z: targetPosition.z,
+        duration: 3,
+        ease: "power2.inOut",
+      });
+
+      gsap.to(cameraRef.current.rotation, {
+        x: targetRotation.x,
+        y: targetRotation.y,
+        z: targetRotation.z,
+        duration: 3,
+        ease: "power2.inOut",
+      });
+    }
+  };
+
   const CustomCamera = () => {
     const { camera } = useThree();
     cameraRef.current = camera; // Set cameraRef to the Three.js camera instance
-    return null; // No need to render anything
+    return null;
   };
 
   return (
@@ -76,7 +127,10 @@ const Scene = ({ playAudio }) => {
           <img src={logo} alt="Logo" className="navbar-logo" />
         </div>
         <div className="nav-links">
-          <button onClick={() => navigate("/information")} className="nav-button">
+          <button
+            onClick={() => navigate("/information")}
+            className="nav-button"
+          >
             INFORMATE
           </button>
           <button onClick={() => navigate("/quiz")} className="nav-button">
@@ -94,29 +148,61 @@ const Scene = ({ playAudio }) => {
         className="volume-icon"
       />
 
-      <div className="intro-container">
-        <h1 className="intro-title">BIENVENIDO</h1>
-        <p className="intro-text">
-          Explora cómo podemos cuidar y preservar juntos el agua para un futuro sostenible.
-        </p>
-        <button className="start-button" onClick={handleStart}>
-          Comenzar
-        </button>
-      </div>
+      {/* Intro Container */}
+      {!showProblems && (
+        <div className="intro-container" ref={introContainerRef}>
+          <h1 className="intro-title">BIENVENIDO</h1>
+          <p className="intro-text">
+            Explora cómo podemos cuidar y preservar juntos el agua para un
+            futuro sostenible.
+          </p>
+          <button className="start-button" onClick={handleStart}>
+            Comenzar
+          </button>
+        </div>
+      )}
+
+      {/* Problems Container */}
+      {showProblems && (
+        <div
+          className="intro-container"
+          ref={problemsContainerRef}
+          style={{ opacity: 0 }} // Start with opacity 0 for the fade-in effect
+        >
+          <h1 className="intro-problems">Introducción a problemas</h1>
+          <p className="problems-text">
+            El agua es esencial para la vida, pero su uso responsable es clave
+            para garantizar su disponibilidad en el futuro. La sostenibilidad
+            del agua consiste en conservar, reutilizar y gestionar
+            eficientemente este recurso vital, garantizando que tanto las
+            personas como el planeta puedan prosperar. A continuación veremos algunas
+            de las consecuencias de no tomar acción por el agua.
+          </p>
+          <button className="start-button" onClick={handleScarcity}>
+            Siguiente
+          </button>
+        </div>
+      )}
 
       <Canvas
         dpr={[1, 1.5]}
         shadows
         camera={{
           position: [10.2995, 6.1062, 10.8091],
-          rotation:[-0.5067, 0.78272, 0.3730],
+          rotation: [-0.5067, 0.78272, 0.373],
           fov: 45,
         }}
       >
         <CustomCamera />
-        
+
         <group position={[0, 5, 0]}>
-          <PositionalAudio ref={audioRef} url="/sound/soundwater.mp3" loop distance={10} volume={70} />
+          <PositionalAudio
+            ref={audioRef}
+            url="/sound/soundwater.mp3"
+            loop
+            distance={10}
+            volume={70}
+          />
         </group>
         <Suspense fallback={null}>
           <ambientLight intensity={2} />
