@@ -1,12 +1,7 @@
 import "./scene.css";
 import React, { useRef, useEffect, useState, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import {
-  OrbitControls,
-  PositionalAudio,
-  Loader,
-  Environment,
-} from "@react-three/drei";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import { PositionalAudio, Loader, Environment, OrbitControls, TrackballControls } from "@react-three/drei";
 import UnderwaterScene from "../../blender/UnderwaterScene";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
@@ -20,7 +15,6 @@ const Scene = ({ playAudio }) => {
   const cameraRef = useRef();
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(playAudio);
-  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -32,10 +26,6 @@ const Scene = ({ playAudio }) => {
     setIsPlaying(!isPlaying);
   };
 
-  const startIntro = () => {
-    setShowIntro(false);
-  };
-
   const handleLogout = () => {
     auth.signOut().then(() => navigate("/"));
   };
@@ -43,22 +33,51 @@ const Scene = ({ playAudio }) => {
   const logCameraPosition = () => {
     if (cameraRef.current) {
       const { x, y, z } = cameraRef.current.position;
+      const { x: rotX, y: rotY, z: rotZ } = cameraRef.current.rotation;
+      
       console.log("Camera Position:", x, y, z);
+      console.log("Camera Rotation (rad):", rotX, rotY, rotZ);
     }
+  };
+
+  const handleStart = () => {
+    if (cameraRef.current) {
+      const targetPosition = {  x: 3.956, y: -2.5957, z: 0.1213 };
+      const targetRotation = { x: -1.6010, y: 1.3585, z: 1.6017 };
+
+      // Animate camera position and rotation with GSAP
+      gsap.to(cameraRef.current.position, {
+        x: targetPosition.x,
+        y: targetPosition.y,
+        z: targetPosition.z,
+        duration: 3,
+        ease: "power2.inOut"
+      });
+
+      gsap.to(cameraRef.current.rotation, {
+        x: targetRotation.x,
+        y: targetRotation.y,
+        z: targetRotation.z,
+        duration: 3,
+        ease: "power2.inOut"
+      });
+    }
+  };
+  
+  const CustomCamera = () => {
+    const { camera } = useThree();
+    cameraRef.current = camera; // Set cameraRef to the Three.js camera instance
+    return null; // No need to render anything
   };
 
   return (
     <div className="scene-container">
-      {/* Navbar */}
       <nav className="navbar">
         <div>
           <img src={logo} alt="Logo" className="navbar-logo" />
         </div>
         <div className="nav-links">
-          <button
-            onClick={() => navigate("/information")}
-            className="nav-button"
-          >
+          <button onClick={() => navigate("/information")} className="nav-button">
             INFORMATE
           </button>
           <button onClick={() => navigate("/quiz")} className="nav-button">
@@ -70,45 +89,34 @@ const Scene = ({ playAudio }) => {
         </div>
       </nav>
 
-      {/* Volume Control */}
       <FontAwesomeIcon
         icon={isPlaying ? faVolumeUp : faVolumeMute}
         onClick={handleAudioToggle}
         className="volume-icon"
       />
 
-      {/* Intro Screen */}
-      {showIntro && (
-        <div className="intro-container">
-          <h1 className="intro-title">BIENVENIDO</h1>
-          <p className="intro-text">
-            Explora cómo podemos cuidar y preservar juntos el agua para un
-            futuro sostenible.
-          </p>
-          <button onClick={startIntro} className="start-button">
-            Comenzar
-          </button>
-        </div>
-      )}
+      <div className="intro-container">
+        <h1 className="intro-title">BIENVENIDO</h1>
+        <p className="intro-text">
+          Explora cómo podemos cuidar y preservar juntos el agua para un futuro sostenible.
+        </p>
+        <button className="start-button" onClick={handleStart}>
+          Comenzar
+        </button>
+      </div>
 
-      {/* Canvas */}
       <Canvas
         dpr={[1, 1.5]}
         shadows
         camera={{
-          position: [11.521756539858348, 6.746721462822984, 7.252281201943268],
+          position: [11.52, 6.75, 7.25],
           fov: 45,
         }}
-        onCreated={({ camera }) => (cameraRef.current = camera)}
       >
+        <CustomCamera />
+        
         <group position={[0, 5, 0]}>
-          <PositionalAudio
-            ref={audioRef}
-            url="/sound/soundwater.mp3"
-            loop
-            distance={10}
-            volume={70}
-          />
+          <PositionalAudio ref={audioRef} url="/sound/soundwater.mp3" loop distance={10} volume={70} />
         </group>
         <Suspense fallback={null}>
           <ambientLight intensity={2} />
@@ -124,17 +132,11 @@ const Scene = ({ playAudio }) => {
             shadow-camera-top={10}
             shadow-camera-bottom={-10}
           />
-          <OrbitControls
-            minPolarAngle={0}
-            maxPolarAngle={Math.PI}
-            enablePan={true}
-          />
           <Environment files="/img/pizzo-skye.hdr" background />
           <UnderwaterScene />
         </Suspense>
       </Canvas>
 
-      {/* Log Camera Position Button */}
       <button
         onClick={logCameraPosition}
         style={{
@@ -150,7 +152,7 @@ const Scene = ({ playAudio }) => {
           borderRadius: "5px",
           cursor: "pointer",
           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.3)",
-          zIndex: 1000, // Ensures it appears on top of other elements
+          zIndex: 1000,
         }}
       >
         Log Camera Position
