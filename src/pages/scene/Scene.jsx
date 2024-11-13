@@ -43,16 +43,6 @@ const Scene = ({ playAudio }) => {
     auth.signOut().then(() => navigate("/"));
   };
 
-  const logCameraPosition = () => {
-    if (cameraRef.current) {
-      const { x, y, z } = cameraRef.current.position;
-      const { x: rotX, y: rotY, z: rotZ } = cameraRef.current.rotation;
-
-      console.log("Camera Position:", x, y, z);
-      console.log("Camera Rotation (rad):", rotX, rotY, rotZ);
-    }
-  };
-
   const handleIntro = () => {
     gsap.to(introContainerRef.current, {
       opacity: 0,
@@ -427,27 +417,6 @@ const Scene = ({ playAudio }) => {
           <UnderwaterScene />
         </Suspense>
       </Canvas>
-
-      <button
-        onClick={logCameraPosition}
-        style={{
-          position: "absolute",
-          top: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          fontSize: "16px",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.3)",
-          zIndex: 1000,
-        }}
-      >
-        Log Camera Position
-      </button>
 
       <Loader />
     </div>
