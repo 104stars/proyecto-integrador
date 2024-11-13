@@ -50,22 +50,22 @@ function Login() {
 
   return (
     <div className="page-background">
-        <div className="login-container">
-            <h1>Bienvenido</h1>
-            <h2>Inicia sesión para continuar</h2>
-            <button onClick={handleLogin} className="google-button">
-                <img src="/google.svg" alt="" className="google-logo" />
-                Entrar con Google
-            </button>
-            <div className="captcha-container">
-                <ReCAPTCHA
-                    sitekey="6LdwKW8qAAAAAO6z-i-fx86kikV_s0GHKHHF0bfh"
-                    onChange={onChange}
-                />
-            </div>
+      <div className="login-container">
+        <h1>Bienvenido</h1>
+        <h2>Inicia sesión para continuar</h2>
+        <button onClick={handleLogin} className="google-button">
+          <img src="/google.svg" alt="" className="google-logo" />
+          Entrar con Google
+        </button>
+        <div className="captcha-container">
+          <ReCAPTCHA
+            sitekey="6LdwKW8qAAAAAO6z-i-fx86kikV_s0GHKHHF0bfh"
+            onChange={onChange}
+          />
         </div>
+      </div>
     </div>
-);
+  );
 }
 
 export default Login;

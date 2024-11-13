@@ -1,33 +1,68 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Loader } from "@react-three/drei";
 import ProblemScarcity from "../../blender/ProblemScarcity";
 import { useNavigate } from "react-router-dom";
+import gsap from "gsap";
 
 const Scarcity = () => {
   const lightRef = useRef();
+  const cameraRef = useRef();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [positionIndex, setPositionIndex] = useState(0);
+
+  // Array of camera positions to cycle through
+  const cameraPositions = [
+    { x: -84, y: 50, z: -19 },
+    { x: -46, y: 60, z: 93 },
+    { x: -64, y: 50, z: 58 },
+    { x: -21.372, y: 20.438, z: -14.206 }
+  ];
 
   useEffect(() => {
-    let lastFrame = performance.now();
-    const animate = () => {
-      const now = performance.now();
-      if (now - lastFrame >= 16) {
-        lastFrame = now;
-      }
-      requestAnimationFrame(animate);
-    };
-    animate();
+    window.cameraRef = cameraRef; // Makes cameraRef globally accessible
   }, []);
 
   useEffect(() => {
-    const handleWheel = (event) => {};
-    window.addEventListener("wheel", handleWheel, { passive: true });
+    // Function to cycle through the camera positions
+    const cycleCameraPosition = () => {
+      const nextIndex = (positionIndex + 1) % cameraPositions.length;
+      const { x, y, z } = cameraPositions[nextIndex];
+
+      // Animate camera to the next position with GSAP
+      gsap.to(cameraRef.current.position, {
+        x,
+        y,
+        z,
+        duration: 2,
+        ease: "power4.out",
+      });
+
+      setPositionIndex(nextIndex);
+    };
+
+    // Adding button to the UI
+    const cycleButton = document.createElement("button");
+    cycleButton.innerText = "Cycle Camera Position";
+    cycleButton.style.position = "absolute";
+    cycleButton.style.top = "20px";
+    cycleButton.style.right = "20px";
+    cycleButton.style.padding = "10px 20px";
+    cycleButton.style.backgroundColor = "#00cc99";
+    cycleButton.style.color = "#fff";
+    cycleButton.style.border = "none";
+    cycleButton.style.borderRadius = "5px";
+    cycleButton.style.cursor = "pointer";
+    cycleButton.onclick = cycleCameraPosition;
+
+    document.body.appendChild(cycleButton);
+
+    // Clean up
     return () => {
-      window.removeEventListener("wheel", handleWheel);
+      document.body.removeChild(cycleButton);
     };
-  }, []);
+  }, [positionIndex]);
 
   const handleLoad = () => {
     setLoading(false);
@@ -44,7 +79,7 @@ const Scarcity = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* Texto de Información en el lado izquierdo */}
+      {/* Information text */}
       <div
         style={{
           flex: "1",
@@ -111,12 +146,13 @@ const Scarcity = () => {
         </button>
       </div>
 
-      {/* Canvas para el escenario 3D en el lado derecho */}
+      {/* 3D scene on the right side */}
       <div style={{ flex: "1", position: "relative" }}>
         <Canvas
           dpr={[1, 1.5]}
           shadows
-          camera={{ position: [5, 20, 500], fov: 90 }}
+          camera={{ position: [5, 20, 500], fov: 60 }}
+          onCreated={({ camera }) => (cameraRef.current = camera)}
         >
           <Suspense fallback={null} onLoaded={handleLoad}>
             <ambientLight intensity={2} />
@@ -128,16 +164,11 @@ const Scarcity = () => {
               shadow-mapSize-width={1024}
               shadow-mapSize-height={1024}
             />
-            <ProblemScarcity
-              scale={[1, 1, 1]}
-              position={[0, -1, 0]}
-              castShadow
-            />
-            <OrbitControls
-              minPolarAngle={Math.PI / 3}
-              maxPolarAngle={Math.PI / -2}
-              minDistance={150}
-              maxDistance={200}
+            <ProblemScarcity scale={[1, 1, 1]} position={[0, -1, 0]} castShadow />
+            <OrbitControls            
+              minDistance={1}
+              maxDistance={120}
+              enablePan={true}
             />
           </Suspense>
         </Canvas>

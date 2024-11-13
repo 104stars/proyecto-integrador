@@ -1,0 +1,11 @@
+scarcity
+const targetPosition ={ x: 0.215, y: 1.071, z: 2.705 }
+const targetRotation =  { x: -0.206, y: -0.475, z: -0.095 }
+
+contaminacion
+const targetPosition ={ x: 0.255, y: 2.944, z: 0.619 }
+const targetRotation =  { x: -0.105, y: 0.520, z: 0.052 }
+
+acidificacion
+const targetPosition = {x:-0.548, y: 5.0181, z:-3.199}
+const targetRotation =  {x:-2.99 ,y: 0.603 , z:3.06}
