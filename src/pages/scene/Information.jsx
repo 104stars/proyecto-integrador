@@ -1,13 +1,104 @@
 // InformationPage.js
-import React, { Suspense, useState } from "react";
-import { OrbitControls, Environment, Loader, Text } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import React, { Suspense, useState, useEffect } from "react";
+import { OrbitControls, Environment, Html, useGLTF } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useNavigate } from "react-router-dom";
-import Video from "../world/Video";
+import YouTube from "react-youtube";
+
+// Función para habilitar sombras en todos los objetos de un modelo GLTF
+function enableShadow(obj) {
+  obj.traverse((node) => {
+    if (node.isMesh) {
+      node.castShadow = true;
+      node.receiveShadow = true;
+    }
+  });
+}
+
+// Componente para el bote de basura con texto "Basura"
+function TrashBinModel({ position, onClick, isUp }) {
+  const { scene } = useGLTF("./model-3d/barrel.glb");
+  enableShadow(scene);
+
+  return (
+    <>
+      <primitive
+        object={scene}
+        scale={1}
+        position={
+          isUp ? position : [position[0], position[1] - 0.5, position[2]]
+        }
+        onClick={onClick}
+      />
+      <Html position={[-1, 1, 0]} center>
+        <div style={{ color: "white", fontWeight: "bold", fontSize: "1.2em" }}>
+          CONTAMINACIÓN
+        </div>
+      </Html>
+    </>
+  );
+}
+
+// Componente para el tronco de árbol con texto "Tronco"
+function TreeTrunkModel({ isRotating, onClick }) {
+  const { scene } = useGLTF("./model-3d/low_poly_tree_trunk.glb");
+  enableShadow(scene);
+
+  useFrame(() => {
+    if (isRotating) {
+      scene.rotation.y += 0.02;
+    }
+  });
+
+  return (
+    <>
+      <primitive
+        object={scene}
+        scale={1}
+        position={[0, 0, 0]}
+        onClick={onClick}
+      />
+      <Html position={[0, 1, 0]} center>
+        <div style={{ color: "white", fontWeight: "bold", fontSize: "1.2em" }}>
+          ESCASEZ
+        </div>
+      </Html>
+    </>
+  );
+}
+
+// Componente para el coral con texto "Coral"
+function CoralModel({ position, onClick }) {
+  const { scene } = useGLTF("./model-3d/mushroom.glb");
+  enableShadow(scene);
+
+  return (
+    <>
+      <primitive
+        object={scene}
+        scale={0.5}
+        position={position}
+        onClick={onClick}
+      />
+      <Html position={[1, 1, 0]} center>
+        <div style={{ color: "white", fontWeight: "bold", fontSize: "1.2em" }}>
+          ACIDIFICACIÓN
+        </div>
+      </Html>
+    </>
+  );
+}
 
 const Information = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [isTrashUp, setIsTrashUp] = useState(true);
+  const [isRotating, setIsRotating] = useState(false);
+  const [coralPosition, setCoralPosition] = useState([1, 0, 0]); // Estado para la posición del coral
+
+  // Estado para controlar el mensaje de sensibilización y video
+  const [activeMessage, setActiveMessage] = useState("");
+  const [videoId, setVideoId] = useState(null); // Estado para controlar el ID del video
 
   const handleBack = () => {
     setLoading(true);
@@ -16,17 +107,77 @@ const Information = () => {
     }, 500);
   };
 
+  // useEffect para manejar los eventos de teclado
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        setIsTrashUp(!isTrashUp); // Alterna entre levantar y bajar el bote de basura
+      }
+      if (event.key === " ") {
+        setIsRotating((prev) => !prev); // Alterna la rotación del tronco
+      }
+
+      // Movimiento del coral con las flechas
+      setCoralPosition((prevPosition) => {
+        const [x, y, z] = prevPosition;
+        const step = 0.1; // Tamaño del paso
+
+        switch (event.key) {
+          case "ArrowUp":
+            return z > -1.4 ? [x, y, z - step] : prevPosition;
+          case "ArrowDown":
+            return z < 1.4 ? [x, y, z + step] : prevPosition;
+          case "ArrowLeft":
+            return x > -2.4 ? [x - step, y, z] : prevPosition;
+          case "ArrowRight":
+            return x < 2.4 ? [x + step, y, z] : prevPosition;
+          default:
+            return prevPosition;
+        }
+      });
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isTrashUp, isRotating]);
+
   return (
     <div
       style={{
         height: "100vh",
         width: "100vw",
         position: "relative",
-        backgroundImage: "url('/img/fondo.webp')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundColor: "#000",
       }}
     >
+      <div
+        style={{
+          position: "absolute",
+          top: "180px",
+          left: "20px",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          color: "#fff",
+          padding: "50px",
+          borderRadius: "10px",
+          zIndex: 10,
+          maxWidth: "300px",
+        }}
+      >
+        <h1 style={{ fontSize: "35px", marginBottom: "10px" }}>
+          INSTRUCCIONES
+        </h1>
+        <p>
+          Presiona <b>Enter</b> para mover el bote de basura, <b>Espacio</b>{" "}
+          para rotar el tronco, y las <b>flechas</b> para mover el <b>Hongo</b>.
+        </p>
+        <p>
+          También puedes hacer clic en cualquiera de los objetos para ver un
+          mensaje y video de sensibilización.
+        </p>
+      </div>
+
       <button
         onClick={handleBack}
         style={{
@@ -34,54 +185,140 @@ const Information = () => {
           top: "20px",
           left: "20px",
           padding: "10px 20px",
-
           border: "none",
           borderRadius: "5px",
           cursor: "pointer",
           fontWeight: "bold",
           zIndex: 20,
         }}
-        onMouseOver={(e) => {
-          e.target.style.backgroundColor = "#004080";
-          e.target.style.color = "#fff";
-        }}
-        onMouseOut={(e) => {
-          e.target.style.backgroundColor = "#f0f0f0";
-          e.target.style.color = "#000";
-        }}
       >
-        Back
+        Atras
       </button>
 
-      <Canvas shadows camera={{ position: [5, 150, 80], fov: 90 }}>
+      <Canvas shadows camera={{ position: [0, 2, 5], fov: 60 }}>
+        <ambientLight intensity={0.3} />
+        <directionalLight
+          position={[5, 5, 5]}
+          castShadow
+          shadow-mapSize-width={1024}
+          shadow-mapSize-height={1024}
+        />
         <Suspense fallback={null}>
-          <ambientLight intensity={8} />
-          <directionalLight position={[0, 1, 5]} intensity={8} />
-          <Text
-            position={[0, 0.8, 0.8]}
-            fontSize={0.5}
-            color="#FFFFFF"
-            anchorX="center"
-            anchorY="bottom"
-          >
-            VIDEO
-          </Text>
+          <Environment files="/img/pizzo-skye.hdr" background />
+          <OrbitControls enablePan={false} />
 
-          <Video position={[0, 0, 1]} />
-          <OrbitControls
-            minPolarAngle={Math.PI / 2}
-            maxPolarAngle={Math.PI / 4}
-            minAzimuthAngle={-Math.PI / 10}
-            maxAzimuthAngle={Math.PI / 10}
-            minDistance={3}
-            maxDistance={4}
-            enableRotate={true}
-            enablePan={false}
+          {/* Base con sombra */}
+          <mesh receiveShadow position={[0, -0.5, 0]}>
+            <boxGeometry args={[5, 0.1, 3]} />
+            <meshStandardMaterial color="#333" />
+          </mesh>
+
+          {/* Modelo de basura con sombra y video al hacer clic */}
+          <TrashBinModel
+            position={[-1, 0, 0]}
+            isUp={isTrashUp}
+            onClick={() => {
+              setActiveMessage(
+                "La contaminación del agua amenaza la vida en nuestro planeta. Cada gota cuenta: cuidemos nuestros ríos, lagos y océanos para asegurar un futuro saludable y sostenible para todos."
+              );
+              setVideoId("zjRwH987294");
+            }}
+          />
+
+          {/* Modelo de tronco de árbol con rotación y video al hacer clic */}
+          <TreeTrunkModel
+            isRotating={isRotating}
+            onClick={() => {
+              setActiveMessage(
+                "El agua es un recurso limitado y esencial para la vida. Cada vez que ahorramos agua, damos un paso hacia un futuro sostenible. Cuidémosla hoy para no sufrir su ausencia mañana."
+              );
+              setVideoId("nuzQK9PzUzc");
+            }}
+          />
+
+          {/* Modelo de coral con movimiento y video al hacer clic */}
+          <CoralModel
+            position={coralPosition}
+            onClick={() => {
+              setActiveMessage(
+                "La acidificación de los océanos pone en riesgo la vida marina y el equilibrio del ecosistema. Reduzcamos la contaminación y el uso de combustibles fósiles para proteger nuestros océanos y su biodiversidad."
+              );
+              setVideoId("6BH8AWDLih4");
+            }}
           />
         </Suspense>
       </Canvas>
 
-      <Loader />
+      {/* Contenedor de mensaje de sensibilización en la esquina superior derecha */}
+      {activeMessage && (
+        <div
+          style={{
+            position: "absolute",
+            top: "18  0px",
+            right: "60px",
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            color: "#fff",
+            padding: "20px",
+            borderRadius: "10px",
+            zIndex: 10,
+            maxWidth: "250px",
+            fontSize: "16px",
+          }}
+        >
+          <p>{activeMessage}</p>
+          <button
+            onClick={() => setActiveMessage("")}
+            style={{
+              marginTop: "10px",
+              backgroundColor: "#004080",
+              color: "white",
+              padding: "5px 10px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              width: "100%",
+            }}
+          >
+            Cerrar
+          </button>
+        </div>
+      )}
+
+      {/* Video de YouTube superpuesto cuando se hace clic en un objeto */}
+      {videoId && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 30,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            padding: "20px",
+            borderRadius: "8px",
+          }}
+        >
+          <YouTube
+            videoId={videoId}
+            opts={{ height: "360", width: "640", playerVars: { autoplay: 1 } }}
+          />
+          <button
+            onClick={() => setVideoId(null)}
+            style={{
+              marginTop: "10px",
+              backgroundColor: "#004080",
+              color: "white",
+              padding: "5px 10px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              width: "100%",
+            }}
+          >
+            Cerrar Video
+          </button>
+        </div>
+      )}
 
       {loading && (
         <div
@@ -104,46 +341,6 @@ const Information = () => {
           Loading...
         </div>
       )}
-
-      <div
-        style={{
-          position: "absolute",
-          bottom: "250px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "20px",
-        }}
-      >
-        {["Causes", "Problem", "Solution"].map((title, index) => (
-          <button
-            key={index}
-            onClick={() => navigate(`/${title.toLowerCase()}`)}
-            style={{
-              width: "150px",
-              padding: "15px",
-
-              border: "none",
-              borderRadius: "5px",
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = "#004080";
-              e.target.style.color = "#fff";
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = "#f0f0f0";
-              e.target.style.color = "#000";
-            }}
-          >
-            {title}
-          </button>
-        ))}
-      </div>
     </div>
   );
 };
