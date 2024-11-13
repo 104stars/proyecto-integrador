@@ -254,7 +254,7 @@ const Information = () => {
         <div
           style={{
             position: "absolute",
-            top: "18  0px",
+            top: "180px",
             right: "60px",
             backgroundColor: "rgba(0, 0, 0, 0.85)",
             color: "#fff",
