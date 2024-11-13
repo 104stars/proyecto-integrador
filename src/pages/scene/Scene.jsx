@@ -32,7 +32,7 @@ const Scene = ({ playAudio }) => {
   const [showEndMessage, setShowEndMessage] = useState(false); // Nuevo estado
 
   const FinalModel = () => {
-    const { scene } = useGLTF("/model-3d/final.glb");
+    const { scene } = useGLTF("./model-3d/final.glb");
 
     useEffect(() => {
       scene.traverse((child) => {
