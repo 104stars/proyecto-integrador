@@ -21,9 +21,10 @@
 }
 
 p {
-  color: #f5f5f5;
+  color: #ffffff;
   font-size: 18px;
   font-family: "Montserrat", sans-serif;
+  font-weight: 70px;
   line-height: 1.6;
   text-align: justify;
   margin-top: 20px;
@@ -140,3 +141,32 @@ p {
   .rotation-controls input[type="range"] {
     width: 100%;
   }
+
+  
+  .scarcity-container {
+  position: absolute;
+  top: 30%;
+  right: 60px;
+  max-width: 500px;
+  z-index: 20;
+  color: #fff;
+  background-color: #00000096;
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  border-radius: 20px;
+  border-color: #e0e0e0;
+  }
+
+  .pollution-container {
+    position: absolute;
+    top: 30%;
+    left: 60px;
+    max-width: 500px;
+    z-index: 20;
+    color: #fff;
+    background-color: #00000096;
+    backdrop-filter: blur(8px);
+    padding: 20px;
+    border-radius: 20px;
+    border-color: #e0e0e0;
+    }
