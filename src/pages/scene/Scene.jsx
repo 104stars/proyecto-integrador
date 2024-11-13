@@ -7,6 +7,7 @@ import {
   Environment,
   OrbitControls,
   TrackballControls,
+  useGLTF,
 } from "@react-three/drei";
 import UnderwaterScene from "../../blender/UnderwaterScene";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,22 @@ const Scene = ({ playAudio }) => {
   const [showPollution, setShowPollution] = useState(false);
   const [showAcid, setAcid] = useState(false);
   const pollutionContainerRef = useRef();
+  const [showEndMessage, setShowEndMessage] = useState(false); // Nuevo estado
+
+  const FinalModel = () => {
+    const { scene } = useGLTF("/model-3d/final.glb");
+
+    useEffect(() => {
+      scene.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+    }, [scene]);
+
+    return <primitive object={scene} />;
+  };
 
   useEffect(() => {
     if (audioRef.current) {
@@ -134,14 +151,14 @@ const Scene = ({ playAudio }) => {
       duration: 1,
       onComplete: () => {
         setShowScarcity(false); // Hide Scarcity content
-        setShowPollution(true);  // Show Pollution content
+        setShowPollution(true); // Show Pollution content
       },
     });
-  
+
     if (cameraRef.current) {
       const targetPosition = { x: 0.255, y: 2.944, z: 0.619 };
       const targetRotation = { x: -0.105, y: 0.52, z: 0.052 };
-  
+
       // Animate the camera movement
       gsap.to(cameraRef.current.position, {
         x: targetPosition.x,
@@ -150,7 +167,7 @@ const Scene = ({ playAudio }) => {
         duration: 3,
         ease: "power2.inOut",
       });
-  
+
       gsap.to(cameraRef.current.rotation, {
         x: targetRotation.x,
         y: targetRotation.y,
@@ -184,11 +201,11 @@ const Scene = ({ playAudio }) => {
         setAcid(true); // Show Acidification content
       },
     });
-  
+
     if (cameraRef.current) {
       const targetPosition = { x: -0.548, y: 5.0181, z: -3.199 };
       const targetRotation = { x: -2.99, y: 0.603, z: 3.06 };
-  
+
       // Animate the camera movement to the Acidification scene
       gsap.to(cameraRef.current.position, {
         x: targetPosition.x,
@@ -197,7 +214,7 @@ const Scene = ({ playAudio }) => {
         duration: 3,
         ease: "power2.inOut",
       });
-  
+
       gsap.to(cameraRef.current.rotation, {
         x: targetRotation.x,
         y: targetRotation.y,
@@ -207,7 +224,7 @@ const Scene = ({ playAudio }) => {
       });
     }
   };
-  
+
   // Trigger fade-in effect for Acidification block when showAcid state changes
   useEffect(() => {
     if (showAcid && pollutionContainerRef.current) {
@@ -221,11 +238,33 @@ const Scene = ({ playAudio }) => {
   }, [showAcid]);
 
   const handleStart = () => {
+    // Restablece los estados de las secciones y oculta el mensaje final
+    setShowIntro(false);
+    setShowScarcity(false);
+    setShowPollution(false);
+    setAcid(false);
+    setShowEndMessage(false); // Oculta el mensaje final
+
+    // Limpia animaciones activas y restablece opacidades
+    gsap.killTweensOf([
+      introContainerRef.current,
+      problemsContainerRef.current,
+      pollutionContainerRef.current,
+    ]);
+    gsap.set(
+      [
+        introContainerRef.current,
+        problemsContainerRef.current,
+        pollutionContainerRef.current,
+      ],
+      { opacity: 1 }
+    );
+
     if (cameraRef.current) {
       const targetPosition = { x: 10.2995, y: 6.1062, z: 10.8091 };
       const targetRotation = { x: -0.5067, y: 0.78272, z: 0.373 };
-  
-      // Animate the camera movement
+
+      // Reinicia la animación de la cámara al punto de inicio
       gsap.to(cameraRef.current.position, {
         x: targetPosition.x,
         y: targetPosition.y,
@@ -233,7 +272,7 @@ const Scene = ({ playAudio }) => {
         duration: 3,
         ease: "power2.inOut",
       });
-  
+
       gsap.to(cameraRef.current.rotation, {
         x: targetRotation.x,
         y: targetRotation.y,
@@ -242,6 +281,12 @@ const Scene = ({ playAudio }) => {
         ease: "power2.inOut",
       });
     }
+
+    // Reinicia el flujo desde la introducción
+    setTimeout(() => {
+      setShowIntro(true);
+      handleIntro();
+    }, 1000);
   };
 
   const CustomCamera = () => {
@@ -363,19 +408,30 @@ const Scene = ({ playAudio }) => {
         >
           <h1 className="intro-problems">Acidificación</h1>
           <p className="problems-text">
-          La acidificación de los océanos es una amenaza silenciosa que pone en
-          riesgo no solo a los ecosistemas marinos, sino también a nuestra
-          propia supervivencia. Los océanos son vitales para la vida en la
-          Tierra; generan gran parte del oxígeno que respiramos y regulan el
-          clima. Protegerlos es proteger nuestro futuro. Cambios simples en
-          nuestro día a día, como reducir el consumo de combustibles fósiles y
-          apoyar prácticas sostenibles, pueden marcar la diferencia. Actuemos
-          juntos para frenar esta amenaza y preservar la riqueza y diversidad de
-          nuestros océanos para las generaciones futuras.
+            La acidificación de los océanos es una amenaza silenciosa que pone
+            en riesgo no solo a los ecosistemas marinos, sino también a nuestra
+            propia supervivencia. Los océanos son vitales para la vida en la
+            Tierra; generan gran parte del oxígeno que respiramos y regulan el
+            clima. Protegerlos es proteger nuestro futuro. Cambios simples en
+            nuestro día a día, como reducir el consumo de combustibles fósiles y
+            apoyar prácticas sostenibles, pueden marcar la diferencia. Actuemos
+            juntos para frenar esta amenaza y preservar la riqueza y diversidad
+            de nuestros océanos para las generaciones futuras.
           </p>
           <button className="start-button" onClick={handleStart}>
             Inicio
           </button>
+          {/*      {showEndMessage && (
+            <div className="end-message-container">
+              <h2>
+                Ve a la sección en la parte superior derecha "Infórmate" para
+                conocer más sobres estas problematicas.
+              </h2>
+              <button className="restart-button" onClick={handleStart}>
+                Volver
+              </button>
+            </div>
+          )} */}
         </div>
       )}
 
@@ -400,21 +456,18 @@ const Scene = ({ playAudio }) => {
           />
         </group>
         <Suspense fallback={null}>
-          <ambientLight intensity={2} />
+          <ambientLight intensity={-1} />
           <directionalLight
-            position={[5, 10, 5]}
-            intensity={1.2}
+            position={[10, 15, 10]}
+            intensity={8}
             castShadow
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
             shadow-camera-far={50}
-            shadow-camera-left={-10}
-            shadow-camera-right={10}
-            shadow-camera-top={10}
-            shadow-camera-bottom={-10}
           />
+
           <Environment files="/img/pizzo-skye.hdr" background />
-          <UnderwaterScene />
+          <FinalModel />
         </Suspense>
       </Canvas>
 

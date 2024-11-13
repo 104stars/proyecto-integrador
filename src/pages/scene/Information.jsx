@@ -95,12 +95,14 @@ const Information = () => {
   const [isTrashUp, setIsTrashUp] = useState(true);
   const [isRotating, setIsRotating] = useState(false);
   const [coralPosition, setCoralPosition] = useState([1, 0, 0]); // Estado para la posición del coral
+  const [forceRender, setForceRender] = useState(false); // Nuevo estado
 
   // Estado para controlar el mensaje de sensibilización y video
   const [activeMessage, setActiveMessage] = useState("");
   const [videoId, setVideoId] = useState(null); // Estado para controlar el ID del video
 
   const handleBack = () => {
+    setForceRender((prev) => !prev); // Alterna el estado
     setLoading(true);
     setTimeout(() => {
       navigate("/scene");
@@ -178,7 +180,7 @@ const Information = () => {
         </p>
       </div>
 
-      <button
+      {/*       <button
         onClick={handleBack}
         style={{
           position: "absolute",
@@ -194,8 +196,12 @@ const Information = () => {
       >
         Atras
       </button>
-
-      <Canvas shadows camera={{ position: [0, 2, 5], fov: 60 }}>
+ */}
+      <Canvas
+        key={forceRender}
+        shadows
+        camera={{ position: [0, 2, 5], fov: 60 }}
+      >
         <ambientLight intensity={0.3} />
         <directionalLight
           position={[5, 5, 5]}
@@ -205,7 +211,7 @@ const Information = () => {
         />
         <Suspense fallback={null}>
           <Environment files="/img/pizzo-skye.hdr" background />
-          <OrbitControls enablePan={false} />
+          <OrbitControls minDistance={5} maxDistance={6} enablePan={false} />
 
           {/* Base con sombra */}
           <mesh receiveShadow position={[0, -0.5, 0]}>
