@@ -63,7 +63,8 @@ const Scene = ({ playAudio }) => {
   const handleIntro = () => {
     gsap.to(introContainerRef.current, {
       opacity: 0,
-      duration: 0.5,
+      duration: 0.3,
+      y: -100,
       onComplete: () => {
         setShowIntro(true);
       },
@@ -123,7 +124,8 @@ const Scene = ({ playAudio }) => {
       // Fade out the intro container and then show scarcity
       gsap.to(problemsContainerRef.current, {
         opacity: 0,
-        duration: 1.5,
+        duration: 0.5,
+        y: -100,
         ease: "power2.inOut",
         onComplete: () => {
           setShowIntro(false); // Hide intro
@@ -139,6 +141,7 @@ const Scene = ({ playAudio }) => {
       gsap.to(problemsContainerRef.current, {
         opacity: 1,
         duration: 1.5,
+        
         ease: "power2.inOut",
       });
     }
@@ -421,17 +424,6 @@ const Scene = ({ playAudio }) => {
           <button className="start-button" onClick={handleStart}>
             Inicio
           </button>
-          {/*      {showEndMessage && (
-            <div className="end-message-container">
-              <h2>
-                Ve a la sección en la parte superior derecha "Infórmate" para
-                conocer más sobres estas problematicas.
-              </h2>
-              <button className="restart-button" onClick={handleStart}>
-                Volver
-              </button>
-            </div>
-          )} */}
         </div>
       )}
 
@@ -456,7 +448,7 @@ const Scene = ({ playAudio }) => {
           />
         </group>
         <Suspense fallback={null}>
-          <ambientLight intensity={-1} />
+          <ambientLight intensity={-0.4} />
           <directionalLight
             position={[10, 15, 10]}
             intensity={8}
@@ -464,6 +456,7 @@ const Scene = ({ playAudio }) => {
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
             shadow-camera-far={50}
+            shadow-bias={-0.001}
           />
 
           <Environment files="/img/pizzo-skye.hdr" background />
