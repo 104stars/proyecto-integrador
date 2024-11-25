@@ -154,6 +154,30 @@ const Information = () => {
         backgroundColor: "#000",
       }}
     >
+      {/* Header */}
+      <header
+        style={{
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "10px 20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 style={{ margin: 0 }}></h2>
+        <nav>
+          <a href="acidification" style={{ margin: "0 15px", color: "#fff" }}>
+            ACIDIFICACIÓN
+          </a>
+          <a href="scarcity" style={{ margin: "0 15px", color: "#fff" }}>
+            ESCASEZ
+          </a>
+          <a href="pollution" style={{ margin: "0 15px", color: "#fff" }}>
+            CONTAMINACION
+          </a>
+        </nav>
+      </header>
       <div
         style={{
           position: "absolute",
