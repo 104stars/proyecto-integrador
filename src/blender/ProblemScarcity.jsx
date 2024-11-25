@@ -3,7 +3,7 @@ import { useGLTF } from "@react-three/drei";
 
 const UnderwaterScene = (props) => {
   // Cargar el archivo .glb
-  const { scene } = useGLTF("./model-3d/escasez.glb");
+  const { scene } = useGLTF("./model-3d/alm.glb");
 
   // Renderizar el modelo cargado
   return <primitive object={scene} {...props} />;
