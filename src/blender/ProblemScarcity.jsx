@@ -1,15 +1,28 @@
-import React from "react";
-import { useGLTF } from "@react-three/drei";
+import React, { useRef, useEffect } from "react";
+import { useGLTF, useAnimations } from "@react-three/drei";
 
-const UnderwaterScene = (props) => {
-  // Cargar el archivo .glb
-  const { scene } = useGLTF("./model-3d/alm.glb");
+const ProblemScarcity = (props) => {
+  const group = useRef();
+  // Load the GLTF model along with its animations
+  const { scene, animations } = useGLTF('./model-3d/alm.glb');
+  const { actions } = useAnimations(animations, group);
 
-  // Renderizar el modelo cargado
-  return <primitive object={scene} {...props} />;
+  useEffect(() => {
+    // Play both animations when the component mounts
+    if (actions) {
+      actions.Scene?.play();
+      actions.birdsAction?.play();
+    }
+
+    return () => {
+      // Cleanup animations on unmount
+      actions.Scene?.stop();
+      actions.birdsAction?.stop();
+    };
+  }, [actions]);
+
+  return <primitive ref={group} object={scene} {...props} />;
 };
 
-export default UnderwaterScene;
-
-// Pre-cargar el modelo para optimizar la carga
+export default ProblemScarcity;
 useGLTF.preload("./model-3d/escasez.glb");

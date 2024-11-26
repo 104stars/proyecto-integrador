@@ -13,8 +13,6 @@ const Scarcity = () => {
   const [loading, setLoading] = useState(true);
   const [positionIndex, setPositionIndex] = useState(0);
 
- 
-  
   useEffect(() => {
     window.cameraRef = cameraRef; // Makes cameraRef globally accessible
   }, []);
@@ -24,6 +22,7 @@ const Scarcity = () => {
     setLoading(false);
   };
 
+  
   return (
     <div className="container">
       {/* 3D Scene */}
@@ -31,7 +30,7 @@ const Scarcity = () => {
         className="canvas"
         dpr={[1, 1.5]}
         shadows
-        camera={{ position: [5, 20, 500], fov: 45 }}
+        camera={{ position: [5, 20, 80], fov: 45 }}
         onCreated={({ camera }) => (cameraRef.current = camera)}
       >
         <Suspense fallback={null}>
@@ -67,5 +66,4 @@ const Scarcity = () => {
     </div>
   );
 };
-
 export default Scarcity;
