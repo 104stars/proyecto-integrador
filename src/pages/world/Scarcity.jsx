@@ -105,7 +105,7 @@ const Scarcity = () => {
           </p>
         </div>
         <button className="text-button" onClick={() => navigate("/problems")}>
-          Back
+          Atrás
         </button>
       </div>
     </div>
