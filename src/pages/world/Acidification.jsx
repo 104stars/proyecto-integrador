@@ -18,10 +18,8 @@ const Acidification = () => {
         flexDirection: "column",
         height: "100vh",
         width: "100vw",
-        fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Header */}
       <header
         style={{
           backgroundColor: "#333",
@@ -45,18 +43,6 @@ const Acidification = () => {
           </a>
         </nav>
       </header>
-
-      <div
-        style={{
-          textAlign: "center",
-          margin: "20px 0",
-          fontSize: "24px",
-          fontWeight: "bold",
-          color: "#333",
-        }}
-      >
-        La Acidificación de los Océanos
-      </div>
 
       <div
         style={{

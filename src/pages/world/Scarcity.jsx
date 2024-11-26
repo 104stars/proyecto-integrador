@@ -38,6 +38,30 @@ const Scarcity = () => {
 
   return (
     <div className="container">
+      <header
+        style={{
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "10px 20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 style={{ margin: 0 }}></h2>
+        <nav>
+          <a href="information" style={{ margin: "0 15px", color: "#fff" }}>
+            INFORMATE
+          </a>
+          <a href="acidification" style={{ margin: "0 15px", color: "#fff" }}>
+            ACIDIFICACION
+          </a>
+          <a href="pollution" style={{ margin: "0 15px", color: "#fff" }}>
+            CONTAMINACION
+          </a>
+        </nav>
+      </header>
+
       <Canvas
         className="canvas"
         dpr={[1, 1.5]}
@@ -104,9 +128,6 @@ const Scarcity = () => {
             recurso hídrico.
           </p>
         </div>
-        <button className="text-button" onClick={() => navigate("/problems")}>
-          Atrás
-        </button>
       </div>
     </div>
   );

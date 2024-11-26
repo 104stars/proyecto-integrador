@@ -29,23 +29,21 @@ const Pollution = () => {
         backgroundColor: "#ffffff",
         padding: "20px",
       }}
-
     >
-{/* Header */}
-<header
-  style={{
-    backgroundColor: "#333",
-    color: "#fff",
-    padding: "30px 60px", // Incrementa el padding para un encabezado más grande
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width:"100%",
-    fontSize:"40px",
-  }}
->
-  
-  <h2 style={{ margin: 0 }}></h2>
+      {/* Header */}
+      <header
+        style={{
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "30px 60px", // Incrementa el padding para un encabezado más grande
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          fontSize: "40px",
+        }}
+      >
+        <h2 style={{ margin: 0 }}></h2>
         <nav>
           <a href="information" style={{ margin: "0 30px", color: "#fff" }}>
             INFORMACION
@@ -57,7 +55,7 @@ const Pollution = () => {
             ACIDIFICACION
           </a>
         </nav>
-</header>
+      </header>
 
       {/* Contenedor de Cajas de Texto */}
       <div
@@ -83,7 +81,9 @@ const Pollution = () => {
             height: "50%",
           }}
         >
-          <h2 style={{ fontSize: "5.8em", marginBottom: "20px", color: "white" }}>
+          <h2
+            style={{ fontSize: "5.8em", marginBottom: "20px", color: "white" }}
+          >
             ¿Qué es la contaminación?
           </h2>
           <p style={{ fontSize: "3.0em", lineHeight: "2", color: "white" }}>
@@ -104,7 +104,9 @@ const Pollution = () => {
             height: "50%",
           }}
         >
-          <h2 style={{ fontSize: "5.8em", marginBottom: "20px", color: "white" }}>
+          <h2
+            style={{ fontSize: "5.8em", marginBottom: "20px", color: "white" }}
+          >
             Consecuencias
           </h2>
           <p style={{ fontSize: "3.0em", lineHeight: "2", color: "white" }}>
@@ -126,7 +128,9 @@ const Pollution = () => {
             height: "50%",
           }}
         >
-          <h2 style={{ fontSize: "5.8em", marginBottom: "20px", color: "white" }}>
+          <h2
+            style={{ fontSize: "5.8em", marginBottom: "20px", color: "white" }}
+          >
             Soluciones
           </h2>
           <p style={{ fontSize: "3.0em", lineHeight: "2", color: "white" }}>
@@ -135,8 +139,6 @@ const Pollution = () => {
           </p>
         </div>
       </div>
-
-  
 
       {/* Canvas 3D */}
       <div
@@ -166,7 +168,9 @@ const Pollution = () => {
               />
               <PhysicalModel />
               <OrbitControls
-                minDistance={1} maxDistance={120} enablePan={true}
+                minDistance={1}
+                maxDistance={120}
+                enablePan={true}
               />
               <Text3D
                 font="/fonts/blue-ocean.json"
@@ -215,4 +219,3 @@ const PhysicalModel = () => {
 };
 
 export default Pollution;
-
