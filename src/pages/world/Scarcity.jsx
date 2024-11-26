@@ -1,9 +1,25 @@
 import "./Scarcity.css";
 import React, { Suspense, useRef, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Loader, Environment } from "@react-three/drei";
+import { Physics, usePlane } from "@react-three/cannon"; // Import usePlane
 import ProblemScarcity from "../../blender/ProblemScarcity";
 import { useNavigate } from "react-router-dom";
+
+// Plane Component
+const GroundPlane = () => {
+  const [ref] = usePlane(() => ({
+    rotation: [-Math.PI / 2, 0, 0], // Rotate to make it horizontal
+    position: [0, -5, 0], // Position it slightly below the model
+  }));
+
+  return (
+    <mesh ref={ref} receiveShadow>
+      <planeGeometry args={[100, 100]} /> {/* Large plane */}
+      <meshStandardMaterial color="lightgray" visible={false} /> {/* Invisible plane */}
+    </mesh>
+  );
+};
 
 const Scarcity = () => {
   const lightRef = useRef();
@@ -29,21 +45,24 @@ const Scarcity = () => {
         onCreated={({ camera }) => (cameraRef.current = camera)}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0} />
-          <directionalLight
-            ref={lightRef}
-            intensity={5}
-            castShadow
-            position={[5, 20, 10]}
-            shadow-mapSize-width={1024}
-            shadow-mapSize-height={1024}
-            shadow-camera-left={-50}
-            shadow-camera-right={50}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
-            shadow-bias={-0.001}
-          />
-          <ProblemScarcity scale={[1, 1, 1]} position={[0, -1, 0]} />
+          <Physics gravity={[0, -9.8, 0]}> {/* Wrap with Physics */}
+            <ambientLight intensity={0.5} />
+            <directionalLight
+              ref={lightRef}
+              intensity={5}
+              castShadow
+              position={[5, 20, 10]}
+              shadow-mapSize-width={1024}
+              shadow-mapSize-height={1024}
+              shadow-camera-left={-50}
+              shadow-camera-right={50}
+              shadow-camera-top={50}
+              shadow-camera-bottom={-50}
+              shadow-bias={-0.001}
+            />
+            <GroundPlane /> {/* Add ground plane */}
+            <ProblemScarcity scale={[1, 1, 1]} position={[0, 0, 0]} />
+          </Physics>
           <OrbitControls minDistance={1} maxDistance={120} enablePan={true} />
         </Suspense>
         <Environment files="/img/bluesky.hdr" background />
