@@ -154,6 +154,43 @@ const Information = () => {
         backgroundColor: "#000",
       }}
     >
+      {/* Header */}
+      <header
+        style={{
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "10px 20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 style={{ margin: 0 }}></h2>
+        <nav
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <a href="scene" style={{ margin: "0 15px", color: "#fff" }}>
+            INICIO
+          </a>
+
+          <div style={{ display: "flex", gap: "15px" }}>
+            <a href="acidification" style={{ color: "#fff" }}>
+              ACIDIFICACIÓN
+            </a>
+            <a href="scarcity" style={{ color: "#fff" }}>
+              ESCASEZ
+            </a>
+            <a href="pollution" style={{ color: "#fff" }}>
+              CONTAMINACION
+            </a>
+          </div>
+        </nav>
+      </header>
       <div
         style={{
           position: "absolute",
@@ -180,23 +217,6 @@ const Information = () => {
         </p>
       </div>
 
-      {/*       <button
-        onClick={handleBack}
-        style={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          padding: "10px 20px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          fontWeight: "bold",
-          zIndex: 20,
-        }}
-      >
-        Atras
-      </button>
- */}
       <Canvas
         key={forceRender}
         shadows
@@ -219,7 +239,6 @@ const Information = () => {
             <meshStandardMaterial color="#333" />
           </mesh>
 
-          {/* Modelo de basura con sombra y video al hacer clic */}
           <TrashBinModel
             position={[-1, 0, 0]}
             isUp={isTrashUp}
@@ -231,7 +250,6 @@ const Information = () => {
             }}
           />
 
-          {/* Modelo de tronco de árbol con rotación y video al hacer clic */}
           <TreeTrunkModel
             isRotating={isRotating}
             onClick={() => {
@@ -242,7 +260,6 @@ const Information = () => {
             }}
           />
 
-          {/* Modelo de coral con movimiento y video al hacer clic */}
           <CoralModel
             position={coralPosition}
             onClick={() => {
@@ -255,7 +272,6 @@ const Information = () => {
         </Suspense>
       </Canvas>
 
-      {/* Contenedor de mensaje de sensibilización en la esquina superior derecha */}
       {activeMessage && (
         <div
           style={{
@@ -290,7 +306,6 @@ const Information = () => {
         </div>
       )}
 
-      {/* Video de YouTube superpuesto cuando se hace clic en un objeto */}
       {videoId && (
         <div
           style={{

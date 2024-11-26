@@ -1,15 +1,13 @@
 import "./scene.css";
 import React, { useRef, useEffect, useState, Suspense } from "react";
-import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import {
   PositionalAudio,
   Loader,
   Environment,
-  OrbitControls,
-  TrackballControls,
   useGLTF,
 } from "@react-three/drei";
-import UnderwaterScene from "../../blender/UnderwaterScene";
+
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -141,7 +139,7 @@ const Scene = ({ playAudio }) => {
       gsap.to(problemsContainerRef.current, {
         opacity: 1,
         duration: 1.5,
-        
+
         ease: "power2.inOut",
       });
     }

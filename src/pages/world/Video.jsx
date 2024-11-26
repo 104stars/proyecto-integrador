@@ -1,4 +1,4 @@
-import { useVideoTexture } from "@react-three/drei";
+/* import { useVideoTexture } from "@react-three/drei";
 import { useCallback, useState } from "react";
 
 const Video = (props) => {
@@ -28,3 +28,4 @@ const Video = (props) => {
 };
 
 export default Video;
+ */

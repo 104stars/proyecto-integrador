@@ -1,15 +1,28 @@
-import React from "react";
-import { useGLTF } from "@react-three/drei";
+import React, { useRef, useEffect } from "react";
+import { useGLTF, useAnimations } from "@react-three/drei";
 
-const UnderwaterScene = (props) => {
-  // Cargar el archivo .glb
-  const { scene } = useGLTF("./model-3d/contaminacion.glb");
+const ProblemPollution = (props) => {
+  const group = useRef();
+  // Load the GLTF model along with its animations
+  const { scene, animations } = useGLTF('./model-3d/contamination.glb');
+  const { actions } = useAnimations(animations, group);
 
-  // Renderizar el modelo cargado
-  return <primitive object={scene} {...props} />;
+  useEffect(() => {
+    // Play both animations when the component mounts
+    if (actions) {
+      actions.Object_14Action?.play();
+      
+    }
+
+    return () => {
+      // Cleanup animations on unmount
+      actions.Object_14Action?.stop();
+     
+    };
+  }, [actions]);
+
+  return <primitive ref={group} object={scene} {...props} />;
 };
 
-export default UnderwaterScene;
-
-// Pre-cargar el modelo para optimizar la carga
-useGLTF.preload("./model-3d/contaminacion.glb");
+export default ProblemPollution;
+useGLTF.preload("./model-3d/contamination.glb")
