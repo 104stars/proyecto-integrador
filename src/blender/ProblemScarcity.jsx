@@ -3,23 +3,29 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 
 const ProblemScarcity = (props) => {
   const group = useRef();
-  // Load the GLTF model along with its animations
-  const { scene, animations } = useGLTF('./model-3d/alm.glb');
+  const { scene, animations } = useGLTF("./model-3d/alm.glb");
   const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
-    // Play both animations when the component mounts
     if (actions) {
       actions.Scene?.play();
       actions.birdsAction?.play();
     }
-
     return () => {
-      // Cleanup animations on unmount
       actions.Scene?.stop();
       actions.birdsAction?.stop();
     };
   }, [actions]);
+
+  // Enable shadows on the model and its children
+  useEffect(() => {
+    scene.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+      }
+    });
+  }, [scene]);
 
   return <primitive ref={group} object={scene} {...props} />;
 };
