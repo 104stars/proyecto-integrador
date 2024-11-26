@@ -169,7 +169,7 @@ p {
   border-color: #e0e0e0;
 }
 
-.end-message-container {
+/* .end-message-container {
   position: absolute;
   top: -30%;
   left: 1500px;
@@ -200,3 +200,4 @@ p {
   transition: border-color 0.1s ease, box-shadow 0.2s ease,
     background-color 0.2s ease;
 }
+ */
