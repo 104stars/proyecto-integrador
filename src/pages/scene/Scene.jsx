@@ -27,7 +27,16 @@ const Scene = ({ playAudio }) => {
   const [showPollution, setShowPollution] = useState(false);
   const [showAcid, setAcid] = useState(false);
   const pollutionContainerRef = useRef();
-  const [showEndMessage, setShowEndMessage] = useState(false); // Nuevo estado
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showSummary = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const FinalModel = () => {
     const { scene } = useGLTF("./model-3d/final.glb");
@@ -317,6 +326,22 @@ const Scene = ({ playAudio }) => {
           </button>
         </div>
       </nav>
+      {isModalOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Resumen de Problemáticas</h2>
+            <p>
+              El agua es esencial para la vida, pero enfrenta amenazas como la
+              escasez, la contaminación y la acidificación de los océanos. Estos
+              problemas impactan tanto a la humanidad como al medio ambiente. La
+              acción inmediata es crucial para asegurar un futuro sostenible.
+            </p>
+            <button className="close-button" onClick={closeModal}>
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
 
       <FontAwesomeIcon
         icon={isPlaying ? faVolumeUp : faVolumeMute}
@@ -419,8 +444,8 @@ const Scene = ({ playAudio }) => {
             juntos para frenar esta amenaza y preservar la riqueza y diversidad
             de nuestros océanos para las generaciones futuras.
           </p>
-          <button className="start-button" onClick={handleStart}>
-            Inicio
+          <button className="start-button" onClick={showSummary}>
+            RESUMEN
           </button>
         </div>
       )}
