@@ -16,7 +16,8 @@ const GroundPlane = () => {
   return (
     <mesh ref={ref} receiveShadow>
       <planeGeometry args={[100, 100]} /> {/* Large plane */}
-      <meshStandardMaterial color="lightgray" visible={false} /> {/* Invisible plane */}
+      <meshStandardMaterial color="lightgray" visible={false} />{" "}
+      {/* Invisible plane */}
     </mesh>
   );
 };
@@ -45,7 +46,9 @@ const Scarcity = () => {
         onCreated={({ camera }) => (cameraRef.current = camera)}
       >
         <Suspense fallback={null}>
-          <Physics gravity={[0, -9.8, 0]}> {/* Wrap with Physics */}
+          <Physics gravity={[0, -9.8, 0]}>
+            {" "}
+            {/* Wrap with Physics */}
             <ambientLight intensity={0.5} />
             <directionalLight
               ref={lightRef}
@@ -70,15 +73,37 @@ const Scarcity = () => {
       <Loader />
 
       <div className="text-container">
-        <h1 className="text-title">Escasez de agua</h1>
-        <p className="text-description">
-          La escasez de agua se produce cuando la demanda de agua supera la
-          oferta o la calidad es inadecuada para las necesidades humanas,
-          medioambientales o agrícolas. Es consecuencia del cambio climático, el
-          uso excesivo, la contaminación y la mala gestión, y afecta a miles de
-          millones de personas en todo el mundo, poniendo en peligro la
-          seguridad alimentaria y la salud.
-        </p>
+        <div className="text-section">
+          <h1 className="text-title">Escasez de agua</h1>
+          <p className="text-description">
+            La escasez de agua se produce cuando la demanda de agua supera la
+            oferta o la calidad es inadecuada para las necesidades humanas,
+            medioambientales o agrícolas. Es consecuencia del cambio climático,
+            el uso excesivo, la contaminación y la mala gestión, y afecta a
+            miles de millones de personas en todo el mundo, poniendo en peligro
+            la seguridad alimentaria y la salud.
+          </p>
+        </div>
+        <div className="text-section">
+          <h1 className="text-title">Causas</h1>
+          <p className="text-description">
+            La escasez de agua se debe a factores como el cambio climático, la
+            deforestación, el crecimiento poblacional, la contaminación de
+            fuentes hídricas y la mala gestión de recursos. Estas causas reducen
+            la disponibilidad de agua potable, afectando a ecosistemas y
+            comunidades.
+          </p>
+        </div>
+        <div className="text-section">
+          <h1 className="text-title">Impacto</h1>
+          <p className="text-description">
+            Fomentar el uso eficiente del agua, proteger y reforestar cuencas
+            hidrográficas, implementar tecnologías de reciclaje y
+            desalinización, reducir la contaminación y promover la educación
+            ambiental son medidas clave para garantizar un acceso sostenible al
+            recurso hídrico.
+          </p>
+        </div>
         <button className="text-button" onClick={() => navigate("/problems")}>
           Back
         </button>
