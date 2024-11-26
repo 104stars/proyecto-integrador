@@ -138,14 +138,15 @@ const Acidification = () => {
           <Canvas shadows camera={{ position: [10, 10, 10], fov: 50 }}>
             <ambientLight intensity={0.5} />
             <directionalLight position={[10, 10, 10]} castShadow />
+
             <Suspense fallback={null}>
               <Environment files="/img/mud_road_puresky_1k.hdr" background />
               <OrbitControls
                 minPolarAngle={Math.PI / 4}
                 maxPolarAngle={Math.PI / 2}
                 minDistance={3}
-                maxDistance={8}
-                enablePan={false}
+                maxDistance={200}
+                enablePan={true}
               />
               <Physics>
                 <Ground />
