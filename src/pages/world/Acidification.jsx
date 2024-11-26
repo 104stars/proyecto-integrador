@@ -155,13 +155,12 @@ const Acidification = () => {
                 <TrashBag />
                 <AnimatedModel />
 
-                {/* Texto 3D */}
                 <Text
-                  position={[0, 3, -5]} // Posición del texto
-                  fontSize={1} // Tamaño del texto
-                  color="black" // Color del texto
-                  anchorX="center" // Alineación en el eje X
-                  anchorY="middle" // Alineación en el eje Y
+                  position={[0, 3, -5]}
+                  fontSize={1}
+                  color="black"
+                  anchorX="center"
+                  anchorY="middle"
                 >
                   CUIDEMOS LOS OCEANOS
                 </Text>
