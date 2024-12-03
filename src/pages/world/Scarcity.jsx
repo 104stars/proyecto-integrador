@@ -93,7 +93,7 @@ const Scarcity = () => {
             <ProblemScarcity scale={[1, 1, 1]} position={[0, 0, 0]} />
           </Physics>
           <OrbitControls minDistance={1} maxDistance={120} enablePan={true} />
-          <EffectComposer multisampling={0}>
+          <EffectComposer>
             <Vignette eskil={false} offset={0.1} darkness={0.7} />
           </EffectComposer>
         </Suspense>
