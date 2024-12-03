@@ -5,6 +5,7 @@ import { OrbitControls, Loader, Environment } from "@react-three/drei";
 import { Physics, usePlane } from "@react-three/cannon"; // Import usePlane
 import ProblemScarcity from "../../blender/ProblemScarcity";
 import { useNavigate } from "react-router-dom";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
 
 // Plane Component
 const GroundPlane = () => {
@@ -37,6 +38,7 @@ const Scarcity = () => {
   };
 
   return (
+    
     <div className="container">
       <header
         style={{
@@ -91,6 +93,9 @@ const Scarcity = () => {
             <ProblemScarcity scale={[1, 1, 1]} position={[0, 0, 0]} />
           </Physics>
           <OrbitControls minDistance={1} maxDistance={120} enablePan={true} />
+          <EffectComposer multisampling={0}>
+            <Vignette eskil={false} offset={0.1} darkness={0.7} />
+          </EffectComposer>
         </Suspense>
         <Environment files="/img/bluesky.hdr" background />
       </Canvas>
