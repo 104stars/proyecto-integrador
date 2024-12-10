@@ -1,7 +1,7 @@
 import "./Scarcity.css";
-import React, { Suspense, useRef, useEffect, useState } from "react";
+import React, { Suspense, useRef, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Loader, Environment } from "@react-three/drei";
+import { OrbitControls, Loader, Environment, PositionalAudio } from "@react-three/drei";
 import { Physics, usePlane } from "@react-three/cannon"; // Import usePlane
 import ProblemScarcity from "../../blender/ProblemScarcity";
 import { useNavigate } from "react-router-dom";
@@ -26,16 +26,11 @@ const GroundPlane = () => {
 const Scarcity = () => {
   const lightRef = useRef();
   const cameraRef = useRef();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.cameraRef = cameraRef;
   }, []);
 
-  const handleLoad = () => {
-    setLoading(false);
-  };
 
   return (
     
@@ -70,6 +65,7 @@ const Scarcity = () => {
         shadows
         camera={{ position: [5, 20, 80], fov: 45 }}
         onCreated={({ camera }) => (cameraRef.current = camera)}
+
       >
         <Suspense fallback={null}>
           <Physics gravity={[0, -9.8, 0]}>
@@ -93,9 +89,11 @@ const Scarcity = () => {
             <ProblemScarcity scale={[1, 1, 1]} position={[0, 0, 0]} />
           </Physics>
           <OrbitControls minDistance={1} maxDistance={120} enablePan={true} />
+          <PositionalAudio url="/sound/desert.mp3" distance={5  } loop={true} autoplay={true} />
           <EffectComposer>
             <Vignette eskil={false} offset={0.1} darkness={0.7} />
           </EffectComposer>
+          
         </Suspense>
         <Environment files="/img/bluesky.hdr" background />
       </Canvas>
