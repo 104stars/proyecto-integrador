@@ -155,7 +155,6 @@ const InteractiveQuiz = () => {
           <ambientLight intensity={0.5} />
           <spotLight position={[10, 10, 10]} intensity={1} />
 
-          {/* Pregunta centrada arriba */}
           <Html
             position={[0, 4, 0]}
             style={{ color: "white", textAlign: "center", fontSize: "1.5rem" }}
@@ -163,11 +162,10 @@ const InteractiveQuiz = () => {
             <h2>{quizData[currentQuestion]?.question}</h2>
           </Html>
 
-          {/* Opciones en objetos 3D centrados */}
           {quizData[currentQuestion]?.options.map((option, index) => (
             <mesh
               key={index}
-              position={[index * 3 - 1.5, 0, 0]} // Distribución equidistante
+              position={[index * 3 - 1.5, 0, 0]}
               onClick={() => handleOptionClick(option.points)}
             >
               <boxGeometry args={[1.5, 1.5, 1.5]} />
