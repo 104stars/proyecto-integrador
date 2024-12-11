@@ -1,46 +1,73 @@
-import React, { useState, useEffect } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Html, OrbitControls } from "@react-three/drei";
+import React, { useState } from "react";
+import { Canvas, useLoader } from "@react-three/fiber";
+import { Environment, OrbitControls, Text } from "@react-three/drei";
 import { db } from "../../../firebase.config";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 const quizData = [
   {
     id: 1,
     question: "¿Qué haces si encuentras una fuga de agua?",
     options: [
-      { text: "Cerrar la llave principal", points: 10, color: "green" },
-      { text: "Ignorarla", points: -5, color: "red" },
+      {
+        text: "Cerrar la llave principal",
+        points: 10,
+        model: "buena.glb",
+        scale: 1.2,
+      },
+      { text: "Ignorarla", points: -5, model: "mala.glb", scale: 0.9 },
     ],
   },
   {
     id: 2,
     question: "Ves basura en un río. ¿Qué decides hacer?",
     options: [
-      { text: "Recolectarla y tirarla", points: 10, color: "green" },
-      { text: "Seguir caminando", points: -5, color: "red" },
+      {
+        text: "Recolectarla y tirarla",
+        points: 10,
+        model: "buena.glb",
+        scale: 1.2,
+      },
+      { text: "Seguir caminando", points: -5, model: "mala.glb", scale: 0.9 },
     ],
   },
   {
     id: 3,
     question: "¿Cómo contribuyes a reducir la escasez de agua?",
     options: [
-      { text: "Recojo agua lluvia", points: 10, color: "green" },
-      { text: "No me preocupa", points: -5, color: "red" },
-    ],
-  },
-  {
-    id: 4,
-    question: "Tu comunidad sufre contaminación. ¿Qué propones?",
-    options: [
-      { text: "Campañas de reforestación", points: 10, color: "green" },
-      { text: "No hacer nada", points: -5, color: "red" },
+      {
+        text: "Recojo agua lluvia",
+        points: 10,
+        model: "buena.glb",
+        scale: 1.2,
+      },
+      { text: "No me preocupa", points: -5, model: "mala.glb", scale: 1.1 },
     ],
   },
 ];
 
-const InteractiveQuiz = () => {
+const OptionModel = ({ option, onClick, position }) => {
+  const model = useLoader(GLTFLoader, `./model-3d/${option.model}`);
+  return (
+    <group position={position} onClick={() => onClick(option.points)}>
+      <primitive object={model.scene} scale={option.scale} />
+
+      <Text
+        position={[-0.3, -0.5, 0]}
+        fontSize={0.4}
+        color="black"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {option.text}
+      </Text>
+    </group>
+  );
+};
+
+const QuizScene = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -85,107 +112,122 @@ const InteractiveQuiz = () => {
     }
   };
 
+  const handleRestartQuiz = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setFinished(false);
+    setReward("");
+  };
+
   return (
-    <div style={{ height: "100vh", width: "100vw", backgroundColor: "#000" }}>
-      <div
+    <div>
+      {/* Header */}
+      <header
         style={{
-          height: "100vh",
-          width: "100vw",
-          position: "relative",
-          backgroundColor: "#000",
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "10px 20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        {/* Header */}
-        <header
+        <h2 style={{ margin: 0 }}></h2>
+        <nav
           style={{
-            backgroundColor: "#333",
-            color: "#fff",
-            padding: "10px 20px",
             display: "flex",
             justifyContent: "space-between",
+            width: "100%",
             alignItems: "center",
           }}
         >
-          <h2 style={{ margin: 0 }}></h2>
-          <nav
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              alignItems: "center",
-            }}
-          >
-            <a href="scene" style={{ margin: "0 15px", color: "#fff" }}>
-              INICIO
-            </a>
-          </nav>
-        </header>
-        {finished ? (
-          <div
-            style={{ textAlign: "center", color: "#fff", marginTop: "2rem" }}
-          >
-            <h2>¡Quiz Terminado!</h2>
-            <p>Puntuación Final: {score}</p>
-            <p>Recompensa Obtenida: {reward}</p>
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                padding: "1rem",
-                fontSize: "1rem",
-                backgroundColor: "green",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              Reiniciar Quiz
-            </button>
-          </div>
-        ) : (
-          <Canvas camera={{ position: [0, 3, 7] }}>
-            <OrbitControls />
-            <ambientLight intensity={0.5} />
-            <spotLight position={[10, 10, 10]} intensity={1} />
+          <a href="scene" style={{ margin: "0 15px", color: "#fff" }}>
+            INICIO
+          </a>
+        </nav>
+      </header>
+      <div style={{ height: "100vh", width: "100vw" }}>
+        <Canvas shadows camera={{ position: [0, 0, 10], fov: 50 }}>
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[5, 5, 5]} intensity={1} castShadow />
+          <OrbitControls enablePan={false} />
+          <Environment files="/img/playa.hdr" background />
 
-            {/* Pregunta */}
-            <Html
-              position={[0, 4, 0]}
-              style={{
-                color: "white",
-                textAlign: "center",
-                fontSize: "1.5rem",
-              }}
-            >
-              <h2>{quizData[currentQuestion]?.question}</h2>
-            </Html>
-
-            {/* Opciones */}
-            {quizData[currentQuestion]?.options.map((option, index) => (
-              <mesh
-                key={index}
-                position={[index * 3 - 1.5, 0, 0]}
-                onClick={() => handleOptionClick(option.points)}
+          {finished ? (
+            <>
+              {/* Mensaje de Quiz Terminado */}
+              <Text
+                position={[0, 3, 0]}
+                fontSize={0.7}
+                color="black"
+                anchorX="center"
+                anchorY="middle"
               >
-                <boxGeometry args={[1.5, 1.5, 1.5]} />
-                <meshStandardMaterial color={option.color} />
-                <Html
-                  position={[0, 1, 0]}
-                  style={{
-                    textAlign: "center",
-                    color: "#fff",
-                    fontSize: "1rem",
-                  }}
+                ¡Quiz Terminado!
+              </Text>
+              <Text
+                position={[0, 1, 0]}
+                fontSize={0.5}
+                color="white"
+                anchorX="center"
+                anchorY="middle"
+              >
+                Puntuación Final: {score}
+              </Text>
+              <Text
+                position={[0, -1, 0]}
+                fontSize={0.5}
+                color="black"
+                anchorX="center"
+                anchorY="middle"
+              >
+                Recompensa: {reward}
+              </Text>
+
+              {/* Botón para reiniciar */}
+              <mesh position={[0, -3, 0]} onClick={handleRestartQuiz}>
+                <boxGeometry args={[4, 1.5, 0.5]} />
+                <meshStandardMaterial color="#4CAF50" />
+                <Text
+                  position={[0, 0, 0.3]}
+                  fontSize={0.4}
+                  color="white"
+                  anchorX="center"
+                  anchorY="middle"
                 >
-                  {option.text}
-                </Html>
+                  Reiniciar Quiz
+                </Text>
               </mesh>
-            ))}
-          </Canvas>
-        )}
+            </>
+          ) : (
+            <>
+              {/* Pregunta en Texto 3D */}
+              <Text
+                position={[0, 3, 0]}
+                fontSize={0.6}
+                color="black"
+                anchorX="center"
+                anchorY="middle"
+              >
+                {quizData[currentQuestion]?.question}
+              </Text>
+              {/* Opciones como modelos */}
+              <OptionModel
+                option={quizData[currentQuestion].options[0]}
+                onClick={handleOptionClick}
+                position={[-3, -2, 0]} // Izquierda
+              />
+              <OptionModel
+                option={quizData[currentQuestion].options[1]}
+                onClick={handleOptionClick}
+                position={[3, -1.5, 0]}
+              />
+            </>
+          )}
+        </Canvas>
       </div>
     </div>
   );
 };
 
-export default InteractiveQuiz;
+export default QuizScene;
