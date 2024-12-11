@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Loader, Environment, Text } from "@react-three/drei";
 import { Physics } from "@react-three/cannon";
@@ -9,8 +9,15 @@ import {
   Walls,
   AnimatedModel,
 } from "../../blender/ProblemAcidification";
+import PostProcessing from "../PostProcessing";
 
 const Acidification = () => {
+  const [isPostProcessingEnabled, setIsPostProcessingEnabled] = useState(true);
+
+  const togglePostProcessing = () => {
+    setIsPostProcessingEnabled((prev) => !prev);
+  };
+
   return (
     <div
       style={{
@@ -112,6 +119,24 @@ const Acidification = () => {
               combatir este problema.
             </p>
           </div>
+
+          {/* Botón para activar/desactivar el postprocesado */}
+          <button
+            onClick={togglePostProcessing}
+            style={{
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "5px",
+              backgroundColor: "#007BFF",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            {isPostProcessingEnabled
+              ? "Desactivar Postprocesado"
+              : "Activar Postprocesado"}
+          </button>
         </div>
 
         <div
@@ -132,7 +157,7 @@ const Acidification = () => {
                 maxPolarAngle={Math.PI / 2}
                 minDistance={3}
                 maxDistance={200}
-                enablePan={true}
+                enablePan={false}
               />
               <Physics>
                 <Ground />
@@ -152,6 +177,8 @@ const Acidification = () => {
                 </Text>
               </Physics>
             </Suspense>
+
+            {isPostProcessingEnabled && <PostProcessing />}
           </Canvas>
           <Loader />
         </div>
