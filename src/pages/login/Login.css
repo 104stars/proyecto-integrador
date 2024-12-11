@@ -5,7 +5,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-image: url('/img/fondo.webp');
+    background-image: radial-gradient(ellipse at top left, #9bb8d8, #1a4081);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
