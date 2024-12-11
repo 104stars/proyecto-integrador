@@ -49,34 +49,16 @@ const InteractiveQuiz = () => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  useEffect(() => {
-    if (user) {
-      loadProgress();
-    }
-  }, [user]);
+  const handleOptionClick = async (points) => {
+    const newScore = score + points;
+    setScore(newScore);
 
-  const loadProgress = async () => {
-    const docRef = doc(db, "user_quiz_progress", user.uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      setCurrentQuestion(data.current_question || 0);
-      setScore(data.score || 0);
-      setFinished(data.finished || false);
+    if (currentQuestion < quizData.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setFinished(true);
+      await saveRewards(newScore);
     }
-  };
-
-  const saveProgress = async (updatedFinished = false) => {
-    const docRef = doc(db, "user_quiz_progress", user.uid);
-    await setDoc(
-      docRef,
-      {
-        current_question: currentQuestion,
-        score: score,
-        finished: updatedFinished,
-      },
-      { merge: true }
-    );
   };
 
   const saveRewards = async (finalScore) => {
@@ -89,96 +71,118 @@ const InteractiveQuiz = () => {
 
     setReward(newReward);
 
-    const rewardRef = doc(db, "user_rewards", user.uid);
-    await setDoc(
-      rewardRef,
-      {
-        reward: newReward,
-        score: finalScore,
-        date: new Date().toISOString(),
-      },
-      { merge: true }
-    );
-  };
-
-  const handleOptionClick = async (points) => {
-    const newScore = score + points;
-    setScore(newScore);
-
-    if (currentQuestion < quizData.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      saveProgress();
-    } else {
-      setFinished(true);
-      saveProgress(true);
-      saveRewards(newScore);
+    if (user) {
+      const rewardRef = doc(db, "user_rewards", user.uid);
+      await setDoc(
+        rewardRef,
+        {
+          reward: newReward,
+          score: finalScore,
+          date: new Date().toISOString(),
+        },
+        { merge: true }
+      );
     }
   };
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100vw",
-        position: "relative",
-        backgroundColor: "#000",
-      }}
-    >
-      {/* Header */}
-      <header
+    <div style={{ height: "100vh", width: "100vw", backgroundColor: "#000" }}>
+      <div
         style={{
-          backgroundColor: "#333",
-          color: "#fff",
-          padding: "10px 20px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          height: "100vh",
+          width: "100vw",
+          position: "relative",
+          backgroundColor: "#000",
         }}
       >
-        <h2 style={{ margin: 0 }}></h2>
-        <nav
+        {/* Header */}
+        <header
           style={{
+            backgroundColor: "#333",
+            color: "#fff",
+            padding: "10px 20px",
             display: "flex",
             justifyContent: "space-between",
-            width: "100%",
             alignItems: "center",
           }}
         >
-          <a href="scene" style={{ margin: "0 15px", color: "#fff" }}>
-            INICIO
-          </a>
-        </nav>
-      </header>
-      <div style={{ height: "100vh", width: "100vw", backgroundColor: "#000" }}>
-        <Canvas camera={{ position: [0, 3, 7] }}>
-          <OrbitControls />
-          <ambientLight intensity={0.5} />
-          <spotLight position={[10, 10, 10]} intensity={1} />
-
-          <Html
-            position={[0, 4, 0]}
-            style={{ color: "white", textAlign: "center", fontSize: "1.5rem" }}
+          <h2 style={{ margin: 0 }}></h2>
+          <nav
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              alignItems: "center",
+            }}
           >
-            <h2>{quizData[currentQuestion]?.question}</h2>
-          </Html>
-
-          {quizData[currentQuestion]?.options.map((option, index) => (
-            <mesh
-              key={index}
-              position={[index * 3 - 1.5, 0, 0]}
-              onClick={() => handleOptionClick(option.points)}
+            <a href="scene" style={{ margin: "0 15px", color: "#fff" }}>
+              INICIO
+            </a>
+          </nav>
+        </header>
+        {finished ? (
+          <div
+            style={{ textAlign: "center", color: "#fff", marginTop: "2rem" }}
+          >
+            <h2>¡Quiz Terminado!</h2>
+            <p>Puntuación Final: {score}</p>
+            <p>Recompensa Obtenida: {reward}</p>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: "1rem",
+                fontSize: "1rem",
+                backgroundColor: "green",
+                color: "#fff",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
             >
-              <boxGeometry args={[1.5, 1.5, 1.5]} />
-              <meshStandardMaterial color={option.color} />
-              <Html
-                position={[0, 1, 0]}
-                style={{ textAlign: "center", color: "#fff", fontSize: "1rem" }}
+              Reiniciar Quiz
+            </button>
+          </div>
+        ) : (
+          <Canvas camera={{ position: [0, 3, 7] }}>
+            <OrbitControls />
+            <ambientLight intensity={0.5} />
+            <spotLight position={[10, 10, 10]} intensity={1} />
+
+            {/* Pregunta */}
+            <Html
+              position={[0, 4, 0]}
+              style={{
+                color: "white",
+                textAlign: "center",
+                fontSize: "1.5rem",
+              }}
+            >
+              <h2>{quizData[currentQuestion]?.question}</h2>
+            </Html>
+
+            {/* Opciones */}
+            {quizData[currentQuestion]?.options.map((option, index) => (
+              <mesh
+                key={index}
+                position={[index * 3 - 1.5, 0, 0]}
+                onClick={() => handleOptionClick(option.points)}
               >
-                <span>{option.text}</span>
-              </Html>
-            </mesh>
-          ))}
-        </Canvas>
+                <boxGeometry args={[1.5, 1.5, 1.5]} />
+                <meshStandardMaterial color={option.color} />
+                <Html
+                  position={[0, 1, 0]}
+                  style={{
+                    textAlign: "center",
+                    color: "#fff",
+                    fontSize: "1rem",
+                  }}
+                >
+                  {option.text}
+                </Html>
+              </mesh>
+            ))}
+          </Canvas>
+        )}
       </div>
     </div>
   );
