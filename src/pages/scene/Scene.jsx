@@ -253,9 +253,8 @@ const Scene = ({ playAudio }) => {
     setShowScarcity(false);
     setShowPollution(false);
     setAcid(false);
-    setShowEndMessage(false); // Oculta el mensaje final
+    setShowEndMessage(false);
 
-    // Limpia animaciones activas y restablece opacidades
     gsap.killTweensOf([
       introContainerRef.current,
       problemsContainerRef.current,
@@ -274,7 +273,6 @@ const Scene = ({ playAudio }) => {
       const targetPosition = { x: 10.2995, y: 6.1062, z: 10.8091 };
       const targetRotation = { x: -0.5067, y: 0.78272, z: 0.373 };
 
-      // Reinicia la animación de la cámara al punto de inicio
       gsap.to(cameraRef.current.position, {
         x: targetPosition.x,
         y: targetPosition.y,
@@ -291,7 +289,6 @@ const Scene = ({ playAudio }) => {
         ease: "power2.inOut",
       });
     }
-
     // Reinicia el flujo desde la introducción
     setTimeout(() => {
       setShowIntro(true);
@@ -301,7 +298,7 @@ const Scene = ({ playAudio }) => {
 
   const CustomCamera = () => {
     const { camera } = useThree();
-    cameraRef.current = camera; // Set cameraRef to the Three.js camera instance
+    cameraRef.current = camera;
     return null;
   };
 
